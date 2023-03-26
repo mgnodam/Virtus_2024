@@ -38,7 +38,6 @@ class Simulator():
 
     # Função que verifica se o estol está ocorrendo ou não, retorna um booleano
     # O método utilizado é a verificação do Clmax para cada secção da asa. Copiando o Xf.
-    # Provavelmente será (v03 atualmente) necessário fazer uma espécie de ponderação na transição de perfis
     def check_stall(self, results):
 
         stall= False
@@ -47,20 +46,30 @@ class Simulator():
             if results['a']['StripForces']['Wing']['Yle'][panel_n] <= self.prototype.w_baf:
                 clmax= self.prototype.w_root_clmax
 
+                if results['a']['StripForces']['Wing']['cl'][panel_n] >= clmax:
+                    stall= True
+                    print('Asa em estol')
+                    return stall
+
+                else:
+                    stall= False
+
             else:
-                clmax= self.prototype.w_tip_clmax
+                af_len= (self.prototype.w_bt - self.prototype.w_baf)/2
+                af_len_perc= (results['a']['StripForces']['Wing']['Yle'][panel_n] - self.prototype.w_baf/2)/af_len
+                clmax= (af_len_perc)*self.prototype.w_tip_clmax + (1-af_len_perc)*self.prototype.w_root_clmax
 
-            if results['a']['StripForces']['Wing']['cl'][panel_n] >= clmax:
-                stall= True
-                print('Asa em estol')
-                return stall
+                if results['a']['StripForces']['Wing']['cl'][panel_n] >= clmax:
+                    stall= True
+                    print('Asa em estol')
+                    return stall
 
-            else:
-                stall= False
+                else:
+                    stall= False
 
-            return stall
+        return stall
 
-    # Cria e roda um caso de angulo de ataque definido e armazena cl e cd
+    # Cria e roda um caso de angulo de ataque definido e armazena os coeficientes desejados
     def run_a(self, a= 0):
 
         a_case = Case(name='a', alpha=a, density= self.rho, Mach= self.mach, velocity= self.v)
@@ -117,7 +126,8 @@ class Simulator():
                 self.clmax= self.cl[a-1]
                 print('Ângulo de estol entre=', a-1,'e', a, 'graus')
                 break
-
+    
+    # Roda uma simulação com o avião trimmado com momento zerado, pra encontrar o ângulo de trimmagem e a margem estática
     def run_trim(self):
 
         trimmed= Case(name='trimmed', alpha=Parameter(name='alpha', constraint='Cm',value=0.0))
@@ -125,7 +135,6 @@ class Simulator():
         trim_results = session.get_results()
 
         self.a_trim= trim_results['trimmed']['Totals']['Alpha']
-
         self.me= me(self.xnp[0], self.prototype.x_cg, self.prototype.w_cr)
 
     # Método que escreve os resultados mais recentes em um arquivo json nomeado
@@ -139,13 +148,13 @@ class Simulator():
         #print('CD=', self.cd)
         #print('CL_ge=', self.cl_ge)
         #print('CD_ge=', self.cd_ge)
-        print('Cm=', self.cm)
-        print('Cma=', self.cma)
-        print('Xnp=', self.xnp)
-        print('X_CG=', self.prototype.x_cg)
+        #print('Cm=', self.cm)
+        #print('Cma=', self.cma)
+        #print('Xnp=', self.xnp)
+        #print('X_CG=', self.prototype.x_cg)
         print('ME=', self.me)
         #print('cnb=', self.cnb)
-        print('vht=', self.prototype.vht)
+        #print('vht=', self.prototype.vht)
         #print('vvt=', self.prototype.vvt)
         print('a_trim=', self.a_trim)
 
@@ -207,7 +216,7 @@ class Simulator():
             self.score= -mtow(self.p, self.t, self.v, self.prototype.m, self.prototype.s, self.cl_ge[0], self.clmax, self.cd_ge[0], self.cd[0], g= 9.81, mu= 0.03, n= 1.2, gamma= 0)
             print('MTOW CALCULADO COM SUCESSO')
             self.prototype.m= -self.score
-            self.print_coeffs()   
+            self.print_coeffs()                                    # Printa os coeficientes desejados após a otimização
             print('########## MTOW=', -self.score,'##########')
 
         except:

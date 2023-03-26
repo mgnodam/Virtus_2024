@@ -4,8 +4,8 @@ from performance import *
 import matplotlib.pyplot as plt
 import time
 
-aviao1= Prototype(w_baf=0.2, w_bt=2.5, w_cr=0.7, w_ct=0.75, w_z=0.0568, w_inc=2, eh_b=1.0, eh_c=0.2, eh_inc=2, ev_b=0.277, ev_cr=0.339, ev_ct=0.6434, eh_x=1.9711, eh_z=0.398, ev_x=0.883, ev_z=0.1, x_cg=0.35, z_cg=0.1, ge=False)
-aviao1_ge= Prototype(w_baf=0.2, w_bt=2.5, w_cr=0.7, w_ct=0.75, w_z=0.0568, w_inc=2, eh_b=1.0, eh_c=0.2, eh_inc=2, ev_b=0.277, ev_cr=0.339, ev_ct=0.6434, eh_x=1.9711, eh_z=0.398, ev_x=0.883, ev_z=0.1, x_cg=0.35, z_cg= 0.1, ge=True)
+aviao1= Prototype(w_baf=0.2, w_bt=2.5, w_cr=0.7, w_ct=0.75, w_z=0.0568, w_inc=2, w_wo=0, eh_b=1.0, eh_c=0.2, eh_inc=2, ev_b=0.277, ev_cr=0.339, ev_ct=0.6434, eh_x=1.9711, eh_z=0.398, ev_x=0.883, ev_z=0.1, x_cg=0.35, z_cg=0.1, ge=False)
+aviao1_ge= Prototype(w_baf=0.2, w_bt=2.5, w_cr=0.7, w_ct=0.75, w_z=0.0568, w_inc=2, w_wo=0, eh_b=1.0, eh_c=0.2, eh_inc=2, ev_b=0.277, ev_cr=0.339, ev_ct=0.6434, eh_x=1.9711, eh_z=0.398, ev_x=0.883, ev_z=0.1, x_cg=0.35, z_cg= 0.1, ge=True)
 
 aviao1.show_geometry()
 

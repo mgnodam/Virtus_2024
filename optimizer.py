@@ -12,30 +12,31 @@ e a necessidade da inclusão de ciclos
 prob= om.Problem()
 
 #Definição dos subsistemas
-individual_inputs= ['w_baf', 'w_bt', 'w_cr', 'w_ct', 'w_z', 'w_inc', 'eh_b', 'eh_c', 'eh_inc', 'ev_b', 'ev_cr', 'ev_ct', 'eh_x', 'eh_z', 'ev_x', 'ev_z', 'x_cg', 'z_cg']
+individual_inputs= ['w_baf', 'w_bt', 'w_cr', 'w_ct', 'w_z', 'w_inc', 'w_wo', 'eh_b', 'eh_c', 'eh_inc', 'ev_b', 'ev_cr', 'ev_ct', 'eh_x', 'eh_z', 'ev_x', 'ev_z', 'x_cg', 'z_cg']
 individual_outputs= ['score', 'vht', 'vvt', 'cm0', 'cma', 'a_trim', 'me', 'cnb', 'g_const']
 
 #Subsistema de avaliação
 prob.model.add_subsystem('individual_scorer', Individual(), promotes_inputs= individual_inputs)
 
-prob.model.set_input_defaults('w_baf', 0.3)
-prob.model.set_input_defaults('w_bt', 2.4)
-prob.model.set_input_defaults('w_cr', 0.6)
-prob.model.set_input_defaults('w_ct', 0.8)
-prob.model.set_input_defaults('w_z', 0.1)
-prob.model.set_input_defaults('w_inc', 1.0)
-prob.model.set_input_defaults('eh_b', 1.0)
-prob.model.set_input_defaults('eh_c', 0.3)
-prob.model.set_input_defaults('eh_inc', 0.0)
-prob.model.set_input_defaults('ev_b', 0.2)
-prob.model.set_input_defaults('ev_cr', 0.3)
-prob.model.set_input_defaults('ev_ct', 0.8)
-prob.model.set_input_defaults('eh_x', 1.2)
-prob.model.set_input_defaults('eh_z', 0.4)
-prob.model.set_input_defaults('ev_x', 0.8)
-prob.model.set_input_defaults('ev_z', 0.2)
-prob.model.set_input_defaults('x_cg', 0.30)
-prob.model.set_input_defaults('z_cg', 0.12)
+prob.model.set_input_defaults('w_baf', 0.44558232)
+prob.model.set_input_defaults('w_bt', 2.46)
+prob.model.set_input_defaults('w_cr', 0.59)
+prob.model.set_input_defaults('w_ct', 0.23079223)
+prob.model.set_input_defaults('w_z', 0.24729512)
+prob.model.set_input_defaults('w_inc', -4.5)
+prob.model.set_input_defaults('w_wo', 0.0)
+prob.model.set_input_defaults('eh_b', 1.18)
+prob.model.set_input_defaults('eh_c', 0.37622494)
+prob.model.set_input_defaults('eh_inc', -4.5)
+prob.model.set_input_defaults('ev_b', 0.13947523)
+prob.model.set_input_defaults('ev_cr', 0.49771621)
+prob.model.set_input_defaults('ev_ct', 0.78117455)
+prob.model.set_input_defaults('eh_x', 1.9)
+prob.model.set_input_defaults('eh_z', 0.20)
+prob.model.set_input_defaults('ev_x', 0.87638406)
+prob.model.set_input_defaults('ev_z', 0.11)
+prob.model.set_input_defaults('x_cg', 0.32291195)
+prob.model.set_input_defaults('z_cg', 0.2)
 
 #Setup do driver
 prob.driver = om.DifferentialEvolutionDriver()
@@ -55,10 +56,11 @@ prob.driver.recording_options['record_desvars'] = True
 # Adicionando todas as variáveis de design
 prob.model.add_design_var('w_baf', lower=0.2, upper= 0.9)
 prob.model.add_design_var('w_bt', lower= 2.0, upper= 2.5)
-prob.model.add_design_var('w_cr', lower= 0.2, upper= 0.7)
+prob.model.add_design_var('w_cr', lower= 0.2, upper= 0.6)
 prob.model.add_design_var('w_ct', lower= 0.2, upper= 1.0)
 prob.model.add_design_var('w_z', lower= 0.05, upper= 0.3)
 prob.model.add_design_var('w_inc', lower= -5, upper= 5)
+prob.model.add_design_var('w_wo', lower= -5, upper= 0)
 prob.model.add_design_var('eh_b', lower= 0.5, upper= 1.2)
 prob.model.add_design_var('eh_c', lower= 0.2, upper= 0.4)
 prob.model.add_design_var('eh_inc', lower= -5.0, upper= 5.0)

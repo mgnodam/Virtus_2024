@@ -1,3 +1,6 @@
+tests.py
 cases.db
 log.optimizer
 log.*
+*.html
+*.json
