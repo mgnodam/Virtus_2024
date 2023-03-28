@@ -61,8 +61,8 @@ class Prototype():
         naca0013_profile_drag= ProfileDrag(cl=[-1.15,0.0,1.15],cd=[0.042,0.008,0.042])
 
         ##### DEFINIÇÃO DOS PERFIS UTILIZADOS #####
-        root_foil='e75s25_MIN003.dat'
-        tip_foil='e25s75_MIN003.dat'
+        root_foil='profiles/e75s25_MIN003.dat'
+        tip_foil='profiles/e25s75_MIN003.dat'
         #root_foil='s1223.dat'
         #tip_foil='s1223.dat'
 
