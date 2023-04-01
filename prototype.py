@@ -9,9 +9,10 @@ class Prototype():
     O número de painéis no AVL é ajustado diretamente no código desta classe.
     '''
 
-    def __init__(self, w_baf, w_bt, w_cr, w_ct, w_z, w_inc, w_wo, eh_b, eh_c, eh_inc, ev_b, ev_cr, ev_ct, eh_x, eh_z, ev_x, ev_z, x_cg, z_cg, m= 10, ge= False):
+    def __init__(self, w_baf, w_bt, w_cr, w_ct, w_z, w_inc, w_wo, eh_b, eh_c, eh_inc, ev_b, ev_cr, ev_ct, eh_x, eh_z, ev_x, x_cg, z_cg, m= 10, ge= False):
         
         #w_baf, w_ct, ev_ct e ev_x são frações (0 a 1) de outra quantidade. Para facilitar a restrição na otimização
+        #Asa:
         w_baf= w_baf* w_bt
         self.w_baf= w_baf   # w_baf é porcentagem do ponto de transição (w_bt)
         self.w_bt= w_bt
@@ -20,34 +21,40 @@ class Prototype():
         self.w_ct= w_ct     #w_ct é porcentagem da corda da raíz (w_cr)
         self.w_inc= w_inc   # Ângulo de incidência da asa
         self.w_wo= w_wo     # Washout na ponta da asa
+        self.w_z= w_z
+        # EH
         self.eh_b= eh_b
         self.eh_c= eh_c
+        self.eh_x= eh_x
+        self.eh_z= eh_z
         self.eh_inc= eh_inc # Ângulo de incidência do eh
+        # EV
         self.ev_b= ev_b
         self.ev_cr= ev_cr
         ev_ct= ev_ct* ev_cr
         self.ev_ct= ev_ct   #ev_ct é porcentagem da corda da raíz (ev_cr)
-        self.eh_x= eh_x
-        self.eh_z= eh_z
         ev_x= ev_x* eh_x
         self.ev_x= ev_x     #ev_x é porcentagem da distância horizontal do eh (eh_x)
+        tan_tboom= (eh_z-w_z)/eh_x
+        ev_z= ev_x*tan_tboom
         self.ev_z= ev_z
-        self.w_z= w_z
+        # Estabilidade
         self.m= m
         x_cg= x_cg * w_cr
         self.x_cg= x_cg     #x_cg é input em porcentagem
         self.z_cg= z_cg
+        # Efeito solo e restrição geométrica
         self.ge= ge
         self.g_const= max(w_bt+ev_z+ev_b , w_bt+eh_z) # Restrição geométrica
 
-        #Dividindo as envergaduras pela metade devido à simetria
+        #Dividindo as envergaduras pela metade devido à simetria. CUIDADO NA HORA DE CALCULAR A ÁREA MAIS TARDE!!!
         w_baf= w_baf/2
         w_bt= w_bt/2
         eh_b= eh_b/2
 
-        ######## FIM DAS DEFINIÇÕES GEOMÉTRICAS ########
+        ################################################### FIM DAS DEFINIÇÕES GEOMÉTRICAS ###################################################
 
-        ######## DEFINIÇÃO DO BANCO DE PERFIS ########
+        ################################################### DEFINIÇÃO DOS PERFIS ###################################################
         #Clmax dos perfis
         s1223_clmax= 2.27
         e75s25_clmax= 2.168 # Peril da raíz
@@ -60,7 +67,6 @@ class Prototype():
         s1223_profile_drag= ProfileDrag(cl=[0.53,1.58,2.27],cd=[0.039,0.019,0.044])
         naca0013_profile_drag= ProfileDrag(cl=[-1.15,0.0,1.15],cd=[0.042,0.008,0.042])
 
-        ##### DEFINIÇÃO DOS PERFIS UTILIZADOS #####
         # O arquivo .dat deve estar junto com o arquivo deste código, colocar os perfis em uma pasta separada aparentemente gera erros
         root_foil='e75s25_MIN003.dat'
         tip_foil='e25s75_MIN003.dat'
@@ -77,7 +83,7 @@ class Prototype():
         #self.w_root_clmax= s1223_clmax
         #self.w_tip_clmax= s1223_clmax
         
-        #Definindo as secções de cada superfície
+        ################################################### Definindo as secções de cada superfície ###################################################
         self.w_root_section = Section(leading_edge_point=Point(0, 0, w_z),
                                     chord=w_cr,
                                     airfoil=FileAirfoil(root_foil),
@@ -121,7 +127,7 @@ class Prototype():
                                         profile_drag= naca0013_profile_drag
                                         )
         
-        #Definindo as superfícies com base nas secções
+        ######################################################## Definindo as superfícies com base nas secções ########################################################
         self.wing_surface = Surface(name="Wing",
                                     n_chordwise=12,
                                     chord_spacing=Spacing.cosine,
@@ -151,7 +157,7 @@ class Prototype():
                                     sections=[self.ev_root_section, self.ev_tip_section]
                                     )
 
-        #Definição da geometria com e sem o efeito solo (método das imagens)
+        ############################################# Definição da geometria com e sem o efeito solo (método das imagens) #############################################
         if ge:
             #Todas as dimensões de referência são calculadas diretamente, mas podem ser implementadas funções mais acima
             self.geometry = Geometry(name="Prototype",
@@ -176,7 +182,7 @@ class Prototype():
                                     y_symmetry=Symmetry.none
                                     )
 
-        #Cálculos de valores de referência (ficar atento à implementação do cg aqui)
+        ########################################## Cálculos de valores de referência (ficar atento à implementação do cg aqui) ##########################################
         #Para o volume de cauda vertical
         self.s= (w_cr*w_baf + ((w_cr+w_ct)/2)*(w_bt-w_baf))*2
         self.lvt= ((ev_x-(self.x_cg))**2+(ev_z)**2)**0.5
