@@ -4,8 +4,8 @@ class Prototype():
     '''
     Classe responsável por construir a geometria no formato do AVL a partir dos parâmetros de interesse
     w= referente à asa, eh= referente ao eh, ev= referente ao ev, b= envergadura, c= corda, r=raíz, t=ponta, af= afilamento, x e z = pontos do bordo de ataque.
-    m= massa, x e z cg = localização do CG. ge liga ou desliga o efeito solo.
-    Atualmente (v03) o CG ainda não é utilizado em cálculo.
+    m= massa, x e z cg = localização do CG. 
+    ge liga ou desliga o efeito solo.
     O número de painéis no AVL é ajustado diretamente no código desta classe.
     '''
 

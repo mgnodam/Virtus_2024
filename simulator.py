@@ -72,7 +72,7 @@ class Simulator():
     # Cria e roda um caso de angulo de ataque definido e armazena os coeficientes desejados
     def run_a(self, a= 0):
 
-        a_case = Case(name='a', alpha=a, density= self.rho, Mach= self.mach, velocity= self.v)
+        a_case = Case(name='a', alpha=a, density= self.rho, Mach= self.mach, velocity= self.v, X_cg=self.prototype.x_cg, Z_cg=self.prototype.z_cg)
 
         print(str.format('Calculando coeficientes em alfa = {}',a))
 
@@ -102,7 +102,7 @@ class Simulator():
         
         print('Calculando coeficientes em efeito solo')
 
-        a_case = Case(name='a', alpha=0, density= self.rho, Mach= self.mach, velocity= self.v)
+        a_case = Case(name='a', alpha=0, density= self.rho, Mach= self.mach, velocity= self.v, X_cg=self.prototype.x_cg, Z_cg=self.prototype.z_cg)
 
         session = Session(geometry=self.prototype_ge.geometry, cases=[a_case])
         a_results = session.get_results()
@@ -130,7 +130,7 @@ class Simulator():
     # Roda uma simulação com o avião trimmado com momento zerado, pra encontrar o ângulo de trimmagem e a margem estática
     def run_trim(self):
 
-        trimmed= Case(name='trimmed', alpha=Parameter(name='alpha', constraint='Cm',value=0.0))
+        trimmed= Case(name='trimmed', alpha=Parameter(name='alpha', constraint='Cm',value=0.0), X_cg=self.prototype.x_cg, Z_cg=self.prototype.z_cg)
         session=Session(geometry= self.prototype.geometry, cases=[trimmed])
         trim_results = session.get_results()
 
