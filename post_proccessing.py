@@ -1,10 +1,6 @@
 import openmdao.api as om
 
-<<<<<<< HEAD
 np=1
-=======
-np=4
->>>>>>> 41fb2e1b0069758b5982af0da4b7716e09998c82
 proc_case=[]
 
 if (np > 1):
@@ -29,19 +25,11 @@ for proc_n in range(len(proc_case)):
     for case in proc_case[proc_n]:
 
         if (
-<<<<<<< HEAD
             (case.outputs['individual_scorer.a_trim'] <= 6) 
             and (case.outputs['individual_scorer.me'] <= 0.4) 
             and (case.outputs['individual_scorer.score'] <= -13.2) 
             and (case.outputs['individual_scorer.g_const'] <= 2.9) 
             #and (case.outputs['individual_scorer.g_const'] >= 2.8)
-=======
-            (case.outputs['individual_scorer.a_trim'] <= 6) and 
-            (case.outputs['individual_scorer.me'] <= 0.4) and 
-            (case.outputs['individual_scorer.score'] <= -13.3) and 
-            (case.outputs['individual_scorer.g_const'] <= 2.9) and 
-            (case.outputs['individual_scorer.g_const'] >= 2.8)
->>>>>>> 41fb2e1b0069758b5982af0da4b7716e09998c82
             ):
 
             print('-------------- PROTOTIPO:', case.name[-3:]+'-'+str(proc_n)+' --------------\n')
@@ -63,11 +51,7 @@ for proc_n in range(len(proc_case)):
                   ' eh_x= ',float(case.outputs['eh_x']),','
                   ' eh_z= ',float(case.outputs['eh_z']),','
                   ' ev_x= ',float(case.outputs['ev_x']),','
-<<<<<<< HEAD
                   ' ev_y= ',float(case.outputs['ev_y']),','
-=======
-                  ' ev_z= ',float(case.outputs['ev_z']),','
->>>>>>> 41fb2e1b0069758b5982af0da4b7716e09998c82
                   ' x_cg= ',float(case.outputs['x_cg']),','
                   ' z_cg= ',float(case.outputs['z_cg']),
                   ')'
