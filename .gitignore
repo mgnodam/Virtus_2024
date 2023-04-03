@@ -3,7 +3,8 @@ __pycache__/
 reports/
 cases.db
 driver_scaling_report.html
-tests.py
+#tests.py
 cases.db
 log.optimizer
+log.post
 out_trim_test.json

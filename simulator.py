@@ -43,7 +43,7 @@ class Simulator():
         stall= False
 
         for panel_n in range(int(len(results['a']['StripForces']['Wing']['Yle'])/2)):
-            if results['a']['StripForces']['Wing']['Yle'][panel_n] <= self.prototype.w_baf:
+            if results['a']['StripForces']['Wing']['Yle'][panel_n] <= self.prototype.w_baf/2:
                 clmax= self.prototype.w_root_clmax
 
                 if results['a']['StripForces']['Wing']['cl'][panel_n] >= clmax:
@@ -72,7 +72,7 @@ class Simulator():
     # Cria e roda um caso de angulo de ataque definido e armazena os coeficientes desejados
     def run_a(self, a= 0):
 
-        a_case = Case(name='a', alpha=a, density= self.rho, Mach= self.mach, velocity= self.v)
+        a_case = Case(name='a', alpha=a, density= self.rho, Mach= self.mach, velocity= self.v, X_cg=self.prototype.x_cg, Z_cg=self.prototype.z_cg)
 
         print(str.format('Calculando coeficientes em alfa = {}',a))
 
@@ -102,7 +102,7 @@ class Simulator():
         
         print('Calculando coeficientes em efeito solo')
 
-        a_case = Case(name='a', alpha=0, density= self.rho, Mach= self.mach, velocity= self.v)
+        a_case = Case(name='a', alpha=0, density= self.rho, Mach= self.mach, velocity= self.v, X_cg=self.prototype.x_cg, Z_cg=self.prototype.z_cg)
 
         session = Session(geometry=self.prototype_ge.geometry, cases=[a_case])
         a_results = session.get_results()
@@ -130,7 +130,7 @@ class Simulator():
     # Roda uma simulação com o avião trimmado com momento zerado, pra encontrar o ângulo de trimmagem e a margem estática
     def run_trim(self):
 
-        trimmed= Case(name='trimmed', alpha=Parameter(name='alpha', constraint='Cm',value=0.0))
+        trimmed= Case(name='trimmed', alpha=Parameter(name='alpha', constraint='Cm',value=0.0), X_cg=self.prototype.x_cg, Z_cg=self.prototype.z_cg)
         session=Session(geometry= self.prototype.geometry, cases=[trimmed])
         trim_results = session.get_results()
 
@@ -157,6 +157,7 @@ class Simulator():
         #print('vht=', self.prototype.vht)
         #print('vvt=', self.prototype.vvt)
         print('a_trim=', self.a_trim)
+        print('g_const=', self.prototype.g_const)
 
     # Método que checa se o protótipo é estável ou não.
     def check_stab(self):
@@ -213,7 +214,7 @@ class Simulator():
         
         try:
             #A otimização busca um mínimo, portanto a nossa pontuação é espelhada aqui
-            self.score= -mtow(self.p, self.t, self.v, self.prototype.m, self.prototype.s, self.cl_ge[0], self.clmax, self.cd_ge[0], self.cd[0], g= 9.81, mu= 0.03, n= 1.2, gamma= 0)
+            self.score= -mtow(self.p, self.t, self.v, self.prototype.m, self.prototype.s_ref, self.cl_ge[0], self.clmax, self.cd_ge[0], self.cd[0], g= 9.81, mu= 0.03, n= 1.2, gamma= 0)
             print('MTOW CALCULADO COM SUCESSO')
             self.prototype.m= -self.score
             self.print_coeffs()                                    # Printa os coeficientes desejados após a otimização

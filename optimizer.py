@@ -12,7 +12,7 @@ e a necessidade da inclusão de ciclos
 prob= om.Problem()
 
 #Definição dos subsistemas
-individual_inputs= ['w_baf', 'w_bt', 'w_cr', 'w_ct', 'w_z', 'w_inc', 'w_wo', 'eh_b', 'eh_c', 'eh_inc', 'ev_b', 'ev_cr', 'ev_ct', 'eh_x', 'eh_z', 'ev_x', 'ev_z', 'x_cg', 'z_cg']
+individual_inputs= ['w_baf', 'w_bt', 'w_cr', 'w_ct', 'w_z', 'w_inc', 'w_wo', 'eh_b', 'eh_c', 'eh_inc', 'ev_b', 'ev_c', 'eh_x', 'eh_z', 'x_cg', 'z_cg']
 individual_outputs= ['score', 'vht', 'vvt', 'cm0', 'cma', 'a_trim', 'me', 'cnb', 'g_const']
 
 #Subsistema de avaliação
@@ -29,19 +29,16 @@ prob.model.set_input_defaults('eh_b', 1.18)
 prob.model.set_input_defaults('eh_c', 0.37622494)
 prob.model.set_input_defaults('eh_inc', -4.5)
 prob.model.set_input_defaults('ev_b', 0.13947523)
-prob.model.set_input_defaults('ev_cr', 0.49771621)
-prob.model.set_input_defaults('ev_ct', 0.78117455)
+prob.model.set_input_defaults('ev_c', 0.49771621)
 prob.model.set_input_defaults('eh_x', 1.9)
 prob.model.set_input_defaults('eh_z', 0.20)
-prob.model.set_input_defaults('ev_x', 0.87638406)
-prob.model.set_input_defaults('ev_z', 0.11)
 prob.model.set_input_defaults('x_cg', 0.32291195)
 prob.model.set_input_defaults('z_cg', 0.2)
 
 #Setup do driver
 prob.driver = om.DifferentialEvolutionDriver()
 prob.driver.options['debug_print']= ['desvars', 'nl_cons', 'totals']    # Apenas pra debug no log
-prob.driver.options['pop_size']= 75                                     # Muito importante um número bom pra explorar todo o espaço de design. Quanto mais variável maior a pop.
+prob.driver.options['pop_size']= 48                                     # Muito importante um número bom pra explorar todo o espaço de design. Quanto mais variável maior a pop.
 prob.driver.options['penalty_parameter']= 15                            # Parâmetros de penalidade ajudam bastante, é bom ajustar se ele estiver violando-as
 prob.driver.options['penalty_exponent']= 1.0
 prob.driver.options['run_parallel']= True                              # Só funciona se conseguir fazer o programa rodar no mpi, fácil pelo wsl
@@ -64,12 +61,9 @@ prob.model.add_design_var('eh_b', lower= 0.5, upper= 1.2)
 prob.model.add_design_var('eh_c', lower= 0.2, upper= 0.4)
 prob.model.add_design_var('eh_inc', lower= -5.0, upper= 5.0)
 prob.model.add_design_var('ev_b', lower= 0.1, upper= 0.3)
-prob.model.add_design_var('ev_cr', lower= 0.2, upper= 0.5)
-prob.model.add_design_var('ev_ct', lower= 0.5, upper= 1.0)
+prob.model.add_design_var('ev_c', lower= 0.2, upper= 0.5)
 prob.model.add_design_var('eh_x', lower= 0.7, upper= 2.0)
 prob.model.add_design_var('eh_z', lower= 0.1, upper= 0.6)
-prob.model.add_design_var('ev_x', lower= 0.6, upper= 1.0)
-prob.model.add_design_var('ev_z', lower= 0.1, upper= 0.4)
 prob.model.add_design_var('x_cg', lower= 0.2, upper= 0.35)
 prob.model.add_design_var('z_cg', lower= 0.1, upper= 0.3)
 
