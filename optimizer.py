@@ -12,7 +12,11 @@ e a necessidade da inclusão de ciclos
 prob= om.Problem()
 
 #Definição dos subsistemas
+<<<<<<< HEAD
 individual_inputs= ['w_baf', 'w_bt', 'w_cr', 'w_ct', 'w_z', 'w_inc', 'w_wo', 'eh_b', 'eh_c', 'eh_inc', 'ev_b', 'ev_c', 'eh_x', 'eh_z', 'x_cg', 'z_cg']
+=======
+individual_inputs= ['w_baf', 'w_bt', 'w_cr', 'w_ct', 'w_z', 'w_inc', 'w_wo', 'eh_b', 'eh_c', 'eh_inc', 'ev_b', 'ev_cr', 'ev_ct', 'eh_x', 'eh_z', 'ev_x', 'x_cg', 'z_cg']
+>>>>>>> 41fb2e1b0069758b5982af0da4b7716e09998c82
 individual_outputs= ['score', 'vht', 'vvt', 'cm0', 'cma', 'a_trim', 'me', 'cnb', 'g_const']
 
 #Subsistema de avaliação
@@ -32,6 +36,10 @@ prob.model.set_input_defaults('ev_b', 0.13947523)
 prob.model.set_input_defaults('ev_c', 0.49771621)
 prob.model.set_input_defaults('eh_x', 1.9)
 prob.model.set_input_defaults('eh_z', 0.20)
+<<<<<<< HEAD
+=======
+prob.model.set_input_defaults('ev_x', 0.87638406)
+>>>>>>> 41fb2e1b0069758b5982af0da4b7716e09998c82
 prob.model.set_input_defaults('x_cg', 0.32291195)
 prob.model.set_input_defaults('z_cg', 0.2)
 
@@ -64,6 +72,10 @@ prob.model.add_design_var('ev_b', lower= 0.1, upper= 0.3)
 prob.model.add_design_var('ev_c', lower= 0.2, upper= 0.5)
 prob.model.add_design_var('eh_x', lower= 0.7, upper= 2.0)
 prob.model.add_design_var('eh_z', lower= 0.1, upper= 0.6)
+<<<<<<< HEAD
+=======
+prob.model.add_design_var('ev_x', lower= 0.6, upper= 1.0)
+>>>>>>> 41fb2e1b0069758b5982af0da4b7716e09998c82
 prob.model.add_design_var('x_cg', lower= 0.2, upper= 0.35)
 prob.model.add_design_var('z_cg', lower= 0.1, upper= 0.3)
 

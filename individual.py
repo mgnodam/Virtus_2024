@@ -24,6 +24,10 @@ class Individual(om.ExplicitComponent):
         self.add_input('ev_c', val= 0.3)
         self.add_input('eh_x', val= 1.0)
         self.add_input('eh_z', val= 0.4)
+<<<<<<< HEAD
+=======
+        self.add_input('ev_x', val= 0.8)
+>>>>>>> 41fb2e1b0069758b5982af0da4b7716e09998c82
         self.add_input('x_cg', val=0.28)
         self.add_input('z_cg', val=0.1)
 
@@ -55,12 +59,21 @@ class Individual(om.ExplicitComponent):
         ev_c= float(inputs['ev_c'])
         eh_x= float(inputs['eh_x'])
         eh_z= float(inputs['eh_z'])
+<<<<<<< HEAD
+=======
+        ev_x= float(inputs['ev_x'])
+>>>>>>> 41fb2e1b0069758b5982af0da4b7716e09998c82
         x_cg= float(inputs['x_cg'])
         z_cg= float(inputs['z_cg'])
 
         # Construção dos indivíduos. Para facilitar, está sendo construindo um indivíduo com e o outro sem efeito solo
+<<<<<<< HEAD
         prototype= Prototype(w_baf, w_bt, w_cr, w_ct, w_z, w_inc, w_wo, eh_b, eh_c, eh_inc, ev_b, ev_c, eh_x, eh_z, x_cg, z_cg, m= 10, ge= False)
         prototype_ge= Prototype(w_baf, w_bt, w_cr, w_ct, w_z, w_inc, w_wo, eh_b, eh_c, eh_inc, ev_b, ev_c, eh_x, eh_z, x_cg, z_cg, m= 10, ge= True)
+=======
+        prototype= Prototype(w_baf, w_bt, w_cr, w_ct, w_z, w_inc, w_wo, eh_b, eh_c, eh_inc, ev_b, ev_cr, ev_ct, eh_x, eh_z, ev_x, x_cg, z_cg)
+        prototype_ge= Prototype(w_baf, w_bt, w_cr, w_ct, w_z, w_inc, w_wo, eh_b, eh_c, eh_inc, ev_b, ev_cr, ev_ct, eh_x, eh_z, ev_x, x_cg, z_cg, ge=True)
+>>>>>>> 41fb2e1b0069758b5982af0da4b7716e09998c82
 
         simulator= Simulator(prototype, prototype_ge)
 
