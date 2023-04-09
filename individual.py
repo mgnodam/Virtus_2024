@@ -19,13 +19,13 @@ class Individual(om.ExplicitComponent):
         self.add_input('w_wo', val= 0.0)
         self.add_input('eh_b', val= 0.8)
         self.add_input('eh_c', val= 0.3)
-        self.add_input('eh_inc', val= 0.0)
+        #self.add_input('eh_inc', val= 0.0)
         self.add_input('ev_b', val= 0.2)
         self.add_input('ev_c', val= 0.3)
         self.add_input('eh_x', val= 1.0)
-        self.add_input('eh_z', val= 0.4)
+        self.add_input('eh_z', val= 0.1)
         self.add_input('x_cg', val=0.28)
-        self.add_input('z_cg', val=0.1)
+        self.add_input('z_cg', val=0.12)
 
         # Os outputs incluem a pontuação e possíveis restrições calculadas internamente em outro código
         self.add_output('score', val= -10.0)
@@ -50,7 +50,7 @@ class Individual(om.ExplicitComponent):
         w_wo= float(inputs['w_wo'])
         eh_b= float(inputs['eh_b'])
         eh_c= float(inputs['eh_c'])
-        eh_inc= float(inputs['eh_inc'])
+        #eh_inc= float(inputs['eh_inc'])
         ev_b= float(inputs['ev_b'])
         ev_c= float(inputs['ev_c'])
         eh_x= float(inputs['eh_x'])
@@ -59,8 +59,8 @@ class Individual(om.ExplicitComponent):
         z_cg= float(inputs['z_cg'])
 
         # Construção dos indivíduos. Para facilitar, está sendo construindo um indivíduo com e o outro sem efeito solo
-        prototype= Prototype(w_baf, w_bt, w_cr, w_ct, w_z, w_inc, w_wo, eh_b, eh_c, eh_inc, ev_b, ev_c, eh_x, eh_z, x_cg, z_cg, m= 10, ge= False)
-        prototype_ge= Prototype(w_baf, w_bt, w_cr, w_ct, w_z, w_inc, w_wo, eh_b, eh_c, eh_inc, ev_b, ev_c, eh_x, eh_z, x_cg, z_cg, m= 10, ge= True)
+        prototype= Prototype(w_baf, w_bt, w_cr, w_ct, w_z, w_inc, w_wo, eh_b, eh_c, ev_b, ev_c, eh_x, eh_z, x_cg, z_cg, m= 10, ge= False)
+        prototype_ge= Prototype(w_baf, w_bt, w_cr, w_ct, w_z, w_inc, w_wo, eh_b, eh_c, ev_b, ev_c, eh_x, eh_z, x_cg, z_cg, m= 10, ge= True)
 
         simulator= Simulator(prototype, prototype_ge)
 

@@ -1,4 +1,5 @@
 import openmdao.api as om
+from stability import *
 
 np=1
 proc_case=[]
@@ -19,15 +20,21 @@ else:
 
 for proc_n in range(len(proc_case)):
 
-    proc_case[proc_n]= proc_case[proc_n][-20:]
+    proc_case[proc_n]= proc_case[proc_n][-100:]
 
 
     for case in proc_case[proc_n]:
 
         if (
-            (case.outputs['individual_scorer.a_trim'] <= 6) 
-            and (case.outputs['individual_scorer.me'] <= 0.4) 
-            and (case.outputs['individual_scorer.score'] <= -13.2) 
+            #True
+            (case.outputs['individual_scorer.a_trim'] <= a_trim_max) 
+            and (case.outputs['individual_scorer.me'] <= 0.4)
+            and (case.outputs['individual_scorer.vht'] <= vht_max)
+            and (case.outputs['individual_scorer.vvt'] >= vvt_min)
+            and (case.outputs['individual_scorer.cnb'] >= cnb_min)
+            and (case.outputs['individual_scorer.cma'] <= cma_max)  
+            and (case.outputs['individual_scorer.score'] <= -13.4)
+            and (case.outputs['individual_scorer.score'] >= -15.0) 
             and (case.outputs['individual_scorer.g_const'] <= 2.9) 
             #and (case.outputs['individual_scorer.g_const'] >= 2.8)
             ):
@@ -44,14 +51,11 @@ for proc_n in range(len(proc_case)):
                   ' w_wo= ',float(case.outputs['w_wo']),','
                   ' eh_b= ',float(case.outputs['eh_b']),','
                   ' eh_c= ',float(case.outputs['eh_c']),','
-                  ' eh_inc= ',float(case.outputs['eh_inc']),','
+                  #' eh_inc= ',float(case.outputs['eh_inc']),','
                   ' ev_b= ',float(case.outputs['ev_b']),','
-                  ' ev_cr= ',float(case.outputs['ev_cr']),','
-                  ' ev_ct= ',float(case.outputs['ev_ct']),','
+                  ' ev_c= ',float(case.outputs['ev_c']),','
                   ' eh_x= ',float(case.outputs['eh_x']),','
                   ' eh_z= ',float(case.outputs['eh_z']),','
-                  ' ev_x= ',float(case.outputs['ev_x']),','
-                  ' ev_y= ',float(case.outputs['ev_y']),','
                   ' x_cg= ',float(case.outputs['x_cg']),','
                   ' z_cg= ',float(case.outputs['z_cg']),
                   ')'
@@ -65,7 +69,7 @@ for proc_n in range(len(proc_case)):
             
             print(
                 '\n Restricoes\n',
-                  '     Geométrica=', float(case.outputs['individual_scorer.g_const']),'\n',
+                  '     Geometrica=', float(case.outputs['individual_scorer.g_const']),'\n',
                   '     VHT=', float(case.outputs['individual_scorer.vht']),'\n',
                   '     VVT=', float(case.outputs['individual_scorer.vvt']),'\n',
                   '     Cm0=', float(case.outputs['individual_scorer.cm0']),'\n',

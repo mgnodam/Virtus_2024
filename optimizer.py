@@ -12,28 +12,28 @@ e a necessidade da inclusão de ciclos
 prob= om.Problem()
 
 #Definição dos subsistemas
-individual_inputs= ['w_baf', 'w_bt', 'w_cr', 'w_ct', 'w_z', 'w_inc', 'w_wo', 'eh_b', 'eh_c', 'eh_inc', 'ev_b', 'ev_c', 'eh_x', 'eh_z', 'x_cg', 'z_cg']
+individual_inputs= ['w_baf', 'w_bt', 'w_cr', 'w_ct', 'w_z', 'w_inc', 'w_wo', 'eh_b', 'eh_c', 'ev_b', 'ev_c', 'eh_x', 'eh_z', 'x_cg', 'z_cg']
 individual_outputs= ['score', 'vht', 'vvt', 'cm0', 'cma', 'a_trim', 'me', 'cnb', 'g_const']
 
 #Subsistema de avaliação
 prob.model.add_subsystem('individual_scorer', Individual(), promotes_inputs= individual_inputs)
 
-prob.model.set_input_defaults('w_baf', 0.44558232)
-prob.model.set_input_defaults('w_bt', 2.46)
+prob.model.set_input_defaults('w_baf', 0.54)
+prob.model.set_input_defaults('w_bt', 2.48)
 prob.model.set_input_defaults('w_cr', 0.59)
-prob.model.set_input_defaults('w_ct', 0.23079223)
-prob.model.set_input_defaults('w_z', 0.24729512)
-prob.model.set_input_defaults('w_inc', -4.5)
-prob.model.set_input_defaults('w_wo', 0.0)
+prob.model.set_input_defaults('w_ct', 0.72)
+prob.model.set_input_defaults('w_z', 0.07)
+prob.model.set_input_defaults('w_inc', -1.0)
+prob.model.set_input_defaults('w_wo', -1.0)
 prob.model.set_input_defaults('eh_b', 1.18)
-prob.model.set_input_defaults('eh_c', 0.37622494)
-prob.model.set_input_defaults('eh_inc', -4.5)
-prob.model.set_input_defaults('ev_b', 0.13947523)
-prob.model.set_input_defaults('ev_c', 0.49771621)
-prob.model.set_input_defaults('eh_x', 1.9)
-prob.model.set_input_defaults('eh_z', 0.20)
-prob.model.set_input_defaults('x_cg', 0.32291195)
-prob.model.set_input_defaults('z_cg', 0.2)
+prob.model.set_input_defaults('eh_c', 0.38)
+#prob.model.set_input_defaults('eh_inc', -4.5)
+prob.model.set_input_defaults('ev_b', 0.25)
+prob.model.set_input_defaults('ev_c', 0.48)
+prob.model.set_input_defaults('eh_x', 1.4)
+prob.model.set_input_defaults('eh_z', 0.15)
+prob.model.set_input_defaults('x_cg', 0.32)
+prob.model.set_input_defaults('z_cg', 0.12)
 
 #Setup do driver
 prob.driver = om.DifferentialEvolutionDriver()
@@ -59,11 +59,11 @@ prob.model.add_design_var('w_inc', lower= -5, upper= 5)
 prob.model.add_design_var('w_wo', lower= -5, upper= 0)
 prob.model.add_design_var('eh_b', lower= 0.5, upper= 1.2)
 prob.model.add_design_var('eh_c', lower= 0.2, upper= 0.4)
-prob.model.add_design_var('eh_inc', lower= -5.0, upper= 5.0)
+#prob.model.add_design_var('eh_inc', lower= -0.1, upper= 0.1)
 prob.model.add_design_var('ev_b', lower= 0.1, upper= 0.3)
 prob.model.add_design_var('ev_c', lower= 0.2, upper= 0.5)
-prob.model.add_design_var('eh_x', lower= 0.7, upper= 2.0)
-prob.model.add_design_var('eh_z', lower= 0.1, upper= 0.6)
+prob.model.add_design_var('eh_x', lower= 1.0, upper= 1.5)
+prob.model.add_design_var('eh_z', lower= 0.05, upper= 0.3)
 prob.model.add_design_var('x_cg', lower= 0.2, upper= 0.35)
 prob.model.add_design_var('z_cg', lower= 0.1, upper= 0.3)
 

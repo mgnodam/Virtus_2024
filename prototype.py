@@ -9,7 +9,7 @@ class Prototype():
     O número de painéis no AVL é ajustado diretamente no código desta classe.
     '''
 
-    def __init__(self, w_baf, w_bt, w_cr, w_ct, w_z, w_inc, w_wo, eh_b, eh_c, eh_inc, ev_b, ev_c, eh_x, eh_z, x_cg, z_cg, m= 10, ge= False):
+    def __init__(self, w_baf, w_bt, w_cr, w_ct, w_z, w_inc, w_wo, eh_b, eh_c, ev_b, ev_c, eh_x, eh_z, x_cg, z_cg, m= 10, ge= False):
         
         #w_baf, w_ct, ev_ct e ev_x são frações (0 a 1) de outra quantidade. Para facilitar a restrição na otimização
 
@@ -25,11 +25,11 @@ class Prototype():
         self.w_z= w_z               # Altura da asa em relação ao chão
 
         # EH
+        eh_z= eh_z + w_z            # eh_z é a altura do EH em relação à asa
         self.eh_b= eh_b             # Envergadura do EH
         self.eh_c= eh_c             # Corda do EH
         self.eh_x= eh_x             # Distância horizontal do bordo de atque do EH, em relação ao bordo de ataque da asa
         self.eh_z= eh_z             # Distância vertical do bordo de atque do EH, em relação ao bordo de ataque da asa
-        self.eh_inc= eh_inc         # Ângulo de incidência do eh
 
         # EV
         ev_ct= ev_c                 # O input de ev_ct é porcentagem da corda da raíz (ev_cr)
@@ -71,7 +71,7 @@ class Prototype():
         e75s25_profile_drag= ProfileDrag(cl=[0.557,1.485,2.168],cd=[0.05,0.0145,0.045])
         e25s75_profile_drag= ProfileDrag(cl=[0.411,1.536,2.22],cd=[0.06,0.018,0.052])
         s1223_profile_drag= ProfileDrag(cl=[0.53,1.58,2.27],cd=[0.039,0.019,0.044])
-        naca0013_profile_drag= ProfileDrag(cl=[-1.15,0.0,1.15],cd=[0.042,0.008,0.042])
+        naca0012_profile_drag= ProfileDrag(cl=[-1.128,0.0,1.128],cd=[0.038,0.0077,0.038])
 
         # O arquivo .dat deve estar junto com o arquivo deste código, colocar os perfis em uma pasta separada aparentemente gera erros
         root_foil='e75s25_MIN003.dat'
@@ -126,26 +126,26 @@ class Prototype():
 
         self.eh_root_section = Section(leading_edge_point=Point(eh_x, 0, eh_z),
                                         chord=eh_c,
-                                        airfoil=NacaAirfoil(naca='0013'),
-                                        profile_drag= naca0013_profile_drag
+                                        airfoil=NacaAirfoil(naca='0012'),
+                                        profile_drag= naca0012_profile_drag
                                         )
         
         self.eh_tip_section = Section(leading_edge_point=Point(eh_x, eh_b_h, eh_z),
                                         chord=eh_c,
-                                        airfoil=NacaAirfoil(naca='0013'),
-                                        profile_drag= naca0013_profile_drag
+                                        airfoil=NacaAirfoil(naca='0012'),
+                                        profile_drag= naca0012_profile_drag
                                         )
         
         self.ev_root_section = Section(leading_edge_point=Point(ev_x, eh_b_h, ev_z),
                                         chord=ev_c,
-                                        airfoil=NacaAirfoil(naca='0013'),
-                                        profile_drag= naca0013_profile_drag
+                                        airfoil=NacaAirfoil(naca='0012'),
+                                        profile_drag= naca0012_profile_drag
                                         )
         
         self.ev_tip_section = Section(leading_edge_point=Point(ev_x, eh_b_h, ev_z+ev_b),
                                         chord=ev_c,
-                                        airfoil=NacaAirfoil(naca='0013'),
-                                        profile_drag= naca0013_profile_drag
+                                        airfoil=NacaAirfoil(naca='0012'),
+                                        profile_drag= naca0012_profile_drag
                                         )
         
         ######################################################## Definindo as superfícies com base nas secções ########################################################
@@ -166,7 +166,7 @@ class Prototype():
                                     span_spacing=Spacing.equal,
                                     #y_duplicate=0.0,
                                     sections=[self.eh_root_section, self.eh_tip_section],
-                                    angle= self.eh_inc
+                                    angle= 0
                                     )
         
         self.ev_surface = Surface(name="Vertical_Stabilizer",
