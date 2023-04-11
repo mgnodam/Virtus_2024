@@ -37,6 +37,8 @@ class Individual(om.ExplicitComponent):
         self.add_output('me', val= 0.1)
         self.add_output('cnb', val= 0.1)
         self.add_output('g_const', val= 2.9)
+        self.add_output('ar', val= 5)
+        self.add_output('eh_ar', val= 3)
 
     # Aqui definimos o que vamos rodar para cada indivíduo
     def compute(self,inputs,outputs):
@@ -77,3 +79,5 @@ class Individual(om.ExplicitComponent):
         outputs['me'] = simulator.me
         outputs['cnb'] = simulator.cnb[0]
         outputs['g_const']= prototype.g_const
+        outputs['ar']= prototype.ar
+        outputs['eh_ar']= prototype.eh_ar

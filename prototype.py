@@ -103,6 +103,10 @@ class Prototype():
         self.sht= eh_b*eh_c
         self.lht= ((eh_x-(self.x_cg))**2+(eh_z)**2)**0.5
         self.vht= (self.lht*self.sht)/(self.c_med*self.s_ref)
+
+        #Para a asa
+        self.ar= (self.w_bt**2)/self.s_ref
+        self.eh_ar= (self.eh_b/self.eh_c)
         
         ################################################### Definindo as secções de cada superfície ###################################################
         self.w_root_section = Section(leading_edge_point=Point(0, 0, w_z),

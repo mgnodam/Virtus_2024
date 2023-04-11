@@ -144,25 +144,23 @@ class Simulator():
     
     # Método que imprime os coeficientes armazenados
     def print_coeffs(self):
-        #print('CL=', self.cl)
-        #print('CD=', self.cd)
-        #print('CL_ge=', self.cl_ge)
-        #print('CD_ge=', self.cd_ge)
+        print('CL=', self.cl)
+        print('CD=', self.cd)
+        print('CL_ge=', self.cl_ge)
+        print('CD_ge=', self.cd_ge)
         print('Cm=', self.cm)
         print('Cma=', self.cma)
-        #print('Xnp=', self.xnp)
+        print('Xnp=', self.xnp)
         print('X_CG=', self.prototype.x_cg)
         print('ME=', self.me)
-        #print('cnb=', self.cnb)
-        #print('vht=', self.prototype.vht)
-        #print('vvt=', self.prototype.vvt)
+        print('cnb=', self.cnb)
+        print('vht=', self.prototype.vht)
+        print('vvt=', self.prototype.vvt)
         print('a_trim=', self.a_trim)
+        print('S_ref=', self.prototype.s_ref)
+        print('AR=', self.prototype.ar)
+        print('eh_AR=', self.prototype.eh_ar)
         print('g_const=', self.prototype.g_const)
-
-    # Método que checa se o protótipo é estável ou não.
-    def check_stab(self):
-
-        stab_check(self.prototype.vht, self.cm[0], self.cma[0], self.a_trim, self.xnp[0], self.prototype.x_cg, self.prototype.w_cr, self.prototype.vvt, self.cnb[0])
 
     # Método que realiza a simulação e pontuação da aeronave. No caso de qualquer erro, a pontuação do indivíduo é zerada
     def scorer(self):
@@ -195,22 +193,6 @@ class Simulator():
             print('FALHA NA SIMULACAO DE TRIMAGEM')
             self.score=0
             a_trim= 0
-
-            #É possível descomentar alguns elementos abaixo para debugging
-            
-            #print('CL=', self.cl)
-            #print('CD=', self.cd)
-            #print('CLmax=', self.clmax)
-            #print('No solo: CL=', self.cl_ge[0], 'CD=', self.cd_ge[0])
-            #print('p=',self.p)
-            #print('t=',self.t)
-            #print('v=',self.v)
-            #print('massa=',self.prototype.m)
-            #print('s=',self.prototype.s)
-            #print('cl_ge=',self.cl_ge[0])
-            #print('clmax=', self.clmax)
-            #print('cd_ge=',self.cd_ge[0])
-            #print('cd=',self.cd[0])
         
         try:
             #A otimização busca um mínimo, portanto a nossa pontuação é espelhada aqui
@@ -223,16 +205,5 @@ class Simulator():
         except:
             print('FALHA NA SIMULACAO DE MTOW')
             self.score=0
-
-        '''
-        try:
-            if not self.check_stab():
-                print('XXXXXXXXXX PROTOTIPO INSTAVEL, PONTUACAO ZERADA XXXXXXXXXX')
-                self.score=0
-        
-        except:
-            print('FALHA NA ANALISE DE ESTABILIDADE')
-            self.score= 0
-        '''
 
         return self.score

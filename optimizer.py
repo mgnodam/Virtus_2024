@@ -13,7 +13,7 @@ prob= om.Problem()
 
 #Definição dos subsistemas
 individual_inputs= ['w_baf', 'w_bt', 'w_cr', 'w_ct', 'w_z', 'w_inc', 'w_wo', 'eh_b', 'eh_c', 'ev_b', 'ev_c', 'eh_x', 'eh_z', 'x_cg', 'z_cg']
-individual_outputs= ['score', 'vht', 'vvt', 'cm0', 'cma', 'a_trim', 'me', 'cnb', 'g_const']
+individual_outputs= ['score', 'vht', 'vvt', 'cm0', 'cma', 'a_trim', 'me', 'cnb', 'g_const', 'ar', 'eh_ar']
 
 #Subsistema de avaliação
 prob.model.add_subsystem('individual_scorer', Individual(), promotes_inputs= individual_inputs)
@@ -75,6 +75,8 @@ prob.model.add_objective('individual_scorer.score')
 # - alguma falha do avl (ex.: uma asa com a ponta entrando nela de novo dava um cl absurdamente alto e ele otimizava nessa direção nas primeiras versões)
 # Sim, daria pra zerar a pontuação de qualquer indivíduo que violasse alguma dessas restrições, só que isso é bem ineficiente (testado)
 prob.model.add_constraint('individual_scorer.g_const', upper=2.9)
+prob.model.add_constraint('individual_scorer.ar', lower=4.0)
+prob.model.add_constraint('individual_scorer.eh_ar', upper=4.0)
 prob.model.add_constraint('individual_scorer.vht', lower= vht_min, upper= vht_max)
 prob.model.add_constraint('individual_scorer.vvt', lower= vvt_min)
 prob.model.add_constraint('individual_scorer.cm0', lower= cm0_min)
