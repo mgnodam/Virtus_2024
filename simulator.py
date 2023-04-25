@@ -196,14 +196,28 @@ class Simulator():
         
         try:
             #A otimização busca um mínimo, portanto a nossa pontuação é espelhada aqui
-            self.score= -mtow(self.p, self.t, self.v, self.prototype.m, self.prototype.s_ref, self.cl_ge[0], self.clmax, self.cd_ge[0], self.cd[0], g= 9.81, mu= 0.03, n= 1.2, gamma= 0)
+            self.score= mtow(self.p, self.t, self.v, self.prototype.m, self.prototype.s_ref, self.cl_ge[0], self.clmax, self.cd_ge[0], self.cd[0], g= 9.81, mu= 0.03, n= 1.2, gamma= 0)
             print('MTOW CALCULADO COM SUCESSO')
-            self.prototype.m= -self.score
+            self.prototype.m= self.score
+            self.m= self.score
             self.print_coeffs()                                    # Printa os coeficientes desejados após a otimização
-            print('########## MTOW=', -self.score,'##########')
+            print('########## MTOW=', self.score,'##########')
+            print('### v_decol=', 1.1*v_estol(self.p, self.t, self.m, self.prototype.s_ref, self.clmax, g=9.81), ' ###')
 
         except:
             print('FALHA NA SIMULACAO DE MTOW')
             self.score=0
+
+        vht_pen= 0
+    
+        if self.prototype.vht > vht_max:
+            vht_pen= 2+ 5*(self.prototype.vht - vht_max)
+
+        if self.prototype.vht < vht_min:
+            vht_pen= 2+ 5*(vht_min - self.prototype.vht)
+
+        pen= vht_pen
+
+        self.score= self.score - pen
 
         return self.score

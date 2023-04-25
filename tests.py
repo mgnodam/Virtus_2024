@@ -4,8 +4,10 @@ from performance import *
 import matplotlib.pyplot as plt
 import time
 
-aviao1= Prototype( w_baf= 0.5436496135067939, w_bt= 2.4936850430839415, w_cr= 0.6, w_ct= 0.7209847642490405, w_z= 0.05, w_inc= 0.40741135790699656, w_wo= -5.0, eh_b= 1.1876392250818837, eh_c= 0.4, ev_b= 0.3, ev_c= 0.5, eh_x= 1.4501831676662942, eh_z= 0.17459520983143406, x_cg= 0.3473064540108614, z_cg= 0.1, ge=False)
-aviao1_ge= Prototype( w_baf= 0.5436496135067939, w_bt= 2.4936850430839415, w_cr= 0.6, w_ct= 0.7209847642490405, w_z= 0.05, w_inc= 0.40741135790699656, w_wo= -5.0, eh_b= 1.1876392250818837, eh_c= 0.4, ev_b= 0.3, ev_c= 0.5, eh_x= 1.4501831676662942, eh_z= 0.17459520983143406, x_cg= 0.3473064540108614, z_cg= 0.1, ge=True)
+aviao1= Prototype ( w_baf= 0.2, w_bt= 2.3, w_cr= 0.5371999324707349, w_ct= 0.63, w_z= 0.3355599220403599, w_inc= 0.0, w_wo= 0.0, eh_b= 1.3, eh_c= 0.2747593961304255, eh_inc= -0.948999247897511, ev_b= 0.20194664637788945, eh_x= 1.2, eh_z= 0.15888979890259508, x_cg= 0.3, z_cg= 0.2747023413120976,
+ge=False)
+aviao1_ge= Prototype( w_baf= 0.2, w_bt= 2.3, w_cr= 0.5371999324707349, w_ct= 0.63, w_z= 0.3355599220403599, w_inc= 0.0, w_wo= 0.0, eh_b= 1.3, eh_c= 0.2747593961304255, eh_inc= -0.948999247897511, ev_b= 0.20194664637788945, eh_x= 1.2, eh_z= 0.15888979890259508, x_cg= 0.3, z_cg= 0.2747023413120976,
+ge=True)
 
 aviao1.show_geometry()
 
@@ -21,15 +23,15 @@ simulation1.scorer()
 #print('CLmax=', simulation1.clmax)
 #print('CL_GE=',simulation1.cl_ge)
 #print('CD_GE=',simulation1.cd_ge)
-#a0 = Case(name='a0', alpha=0, X_cg= 0.2, Z_cg=0.1)
+a0 = Case(name='a0', alpha=0, X_cg= 0.3, Z_cg=0.27)
 #trimmed= Case(name='trimmed', alpha=Parameter(name='alpha', constraint='Cm',value=0.0))
-#session=Session(geometry=aviao1.geometry,
-#        cases=[a0])
-#results= session.get_results()
+session=Session(geometry=aviao1.geometry,
+        cases=[a0])
+results= session.get_results()
 #mass= mtow(simulation1.p, simulation1.t, simulation1.v, simulation1.prototype.m, simulation1.prototype.s, simulation1.cl_ge[0], simulation1.clmax, simulation1.cd_ge[0], simulation1.cd[0], g= 9.81, mu= 0.03, n= 1.2, gamma= 0)
 #print(mass)
-#with open('out.json', 'w') as f:
-#        f.write(json.dumps(results))
+with open('out.json', 'w') as f:
+        f.write(json.dumps(results))
 
 #time.sleep(0)
 '''

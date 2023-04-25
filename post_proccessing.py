@@ -27,19 +27,20 @@ for proc_n in range(len(proc_case)):
 
         if (
             #True
-            (case.outputs['individual_scorer.a_trim'] <= a_trim_max) 
-            and (case.outputs['individual_scorer.me'] <= 0.4)
-            and (case.outputs['individual_scorer.vht'] <= vht_max)
+            (case.outputs['individual_scorer.a_trim'] <= a_trim_max)
+            and (case.outputs['individual_scorer.a_trim'] >= a_trim_min) 
+            and (case.outputs['individual_scorer.me'] <= 0.40)
+            and (case.outputs['individual_scorer.ar'] >= 5)
+            and (case.outputs['individual_scorer.vht'] <= 0.8)
             and (case.outputs['individual_scorer.vvt'] >= vvt_min)
-            and (case.outputs['individual_scorer.cnb'] >= cnb_min)
             and (case.outputs['individual_scorer.cma'] <= cma_max)  
-            and (case.outputs['individual_scorer.score'] <= -13.4)
-            and (case.outputs['individual_scorer.score'] >= -15.0) 
+            and (case.outputs['individual_scorer.score'] >= 12.1)
             and (case.outputs['individual_scorer.g_const'] <= 2.9) 
             #and (case.outputs['individual_scorer.g_const'] >= 2.8)
+            and (case.outputs['individual_scorer.cg_con'] >=0.0)
             ):
 
-            print('-------------- PROTOTIPO:', case.name[-3:]+'-'+str(proc_n)+' --------------\n')
+            print('-------------- PROTOTIPO:', case.name[-4:]+'-'+str(proc_n)+' --------------\n')
             print(
                 ' Variaveis de design: (',
                   ' w_baf= ',float(case.outputs['w_baf']),','
@@ -51,9 +52,8 @@ for proc_n in range(len(proc_case)):
                   ' w_wo= ',float(case.outputs['w_wo']),','
                   ' eh_b= ',float(case.outputs['eh_b']),','
                   ' eh_c= ',float(case.outputs['eh_c']),','
-                  #' eh_inc= ',float(case.outputs['eh_inc']),','
+                  ' eh_inc= ',float(case.outputs['eh_inc']),','
                   ' ev_b= ',float(case.outputs['ev_b']),','
-                  ' ev_c= ',float(case.outputs['ev_c']),','
                   ' eh_x= ',float(case.outputs['eh_x']),','
                   ' eh_z= ',float(case.outputs['eh_z']),','
                   ' x_cg= ',float(case.outputs['x_cg']),','
@@ -64,7 +64,7 @@ for proc_n in range(len(proc_case)):
             
             print(
                 '\n Objetivos\n',
-                  '     MTOW=', -float(case.outputs['individual_scorer.score'])
+                  '     MTOW=', float(case.outputs['individual_scorer.score'])
                   )
             
             print(
@@ -72,9 +72,10 @@ for proc_n in range(len(proc_case)):
                   '     Geometrica=', float(case.outputs['individual_scorer.g_const']),'\n',
                   '     VHT=', float(case.outputs['individual_scorer.vht']),'\n',
                   '     VVT=', float(case.outputs['individual_scorer.vvt']),'\n',
+                  '     AR=', float(case.outputs['individual_scorer.ar']),'\n',
+                  '     AR do EH=', float(case.outputs['individual_scorer.eh_ar']),'\n',
                   '     Cm0=', float(case.outputs['individual_scorer.cm0']),'\n',
                   '     Cma=', float(case.outputs['individual_scorer.cma']),'\n',
-                  '     Cnb=', float(case.outputs['individual_scorer.cnb']),'\n',
                   '     Angulo de trimmagem=', float(case.outputs['individual_scorer.a_trim']),'\n',
                   '     Margem Estatica=', float(case.outputs['individual_scorer.me']),'\n'
                   )

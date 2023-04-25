@@ -9,7 +9,7 @@ class Prototype():
     O número de painéis no AVL é ajustado diretamente no código desta classe.
     '''
 
-    def __init__(self, w_baf, w_bt, w_cr, w_ct, w_z, w_inc, w_wo, eh_b, eh_c, ev_b, ev_c, eh_x, eh_z, x_cg, z_cg, m= 10, ge= False):
+    def __init__(self, w_baf, w_bt, w_cr, w_ct, w_z, w_inc, w_wo, eh_b, eh_c, eh_inc, ev_b, eh_x, eh_z, x_cg, z_cg, m= 10, ge= False):
         
         #w_baf, w_ct, ev_ct e ev_x são frações (0 a 1) de outra quantidade. Para facilitar a restrição na otimização
 
@@ -28,10 +28,12 @@ class Prototype():
         eh_z= eh_z + w_z            # eh_z é a altura do EH em relação à asa
         self.eh_b= eh_b             # Envergadura do EH
         self.eh_c= eh_c             # Corda do EH
+        self.eh_inc= eh_inc         # Ângulo de incidência do EH
         self.eh_x= eh_x             # Distância horizontal do bordo de atque do EH, em relação ao bordo de ataque da asa
         self.eh_z= eh_z             # Distância vertical do bordo de atque do EH, em relação ao bordo de ataque da asa
 
         # EV
+        ev_c= eh_c
         ev_ct= ev_c                 # O input de ev_ct é porcentagem da corda da raíz (ev_cr)
         ev_x= eh_x                  # EV fixado com o EH
         ev_y= eh_b/2                # Fixando ev_y na ponta do eh
@@ -48,10 +50,11 @@ class Prototype():
         self.m= m                   # Massa total do avião (Não altera os momentos, já que o ponto de referência é o próprio CG)
         self.x_cg= x_cg             # Distância horizontal do CG, em relação ao bordo de ataque da asa
         self.z_cg= z_cg             # Distância vertical do CG, em relação ao bordo de ataque da asa
+        self.cg_con= w_z-z_cg       # Restrição > 0 para garantir que o cg esteja abaixo da asa
 
         # Efeito solo e restrição geométrica
         self.ge= ge
-        self.g_const= max(w_bt+ev_z+ev_b , w_bt+eh_z) # Restrição geométrica
+        self.g_const= w_bt+ev_z+ev_b # Restrição geométrica
         
         #Dividindo as envergaduras pela metade devido à simetria. CUIDADO NA HORA DE CALCULAR A ÁREA E OUTRAS PROPRIEDADES MAIS TARDE!!!
         w_baf_h= w_baf/2
@@ -63,31 +66,45 @@ class Prototype():
         ################################################### DEFINIÇÃO DOS PERFIS ###################################################
         #Clmax dos perfis
         s1223_clmax= 2.27
+        s1223_mod2015_clmax= 2.36
         e75s25_clmax= 2.168 # Peril da raíz
         e25s75_clmax= 2.22  # Perfil da ponta
+        e50s201550_clmax= 2.195 # Peril da raíz
+        e30s201570_clmax= 2.243  # Perfil da ponta
         
         #Definindo as polares para contabilização do arrasto parasita em cada perfil. Também vindo do xf
         s1223_profile_drag= ProfileDrag(cl=[0.53,1.58,2.27],cd=[0.039,0.019,0.044])
+        s1223_mod2015_profile_drag= ProfileDrag(cl=[0.446,1.32,2.36],cd=[0.051,0.018,0.051])
+
         e75s25_profile_drag= ProfileDrag(cl=[0.557,1.485,2.168],cd=[0.05,0.0145,0.045])
         e25s75_profile_drag= ProfileDrag(cl=[0.411,1.536,2.22],cd=[0.06,0.018,0.052])
-        s1223_profile_drag= ProfileDrag(cl=[0.53,1.58,2.27],cd=[0.039,0.019,0.044])
+
+        e50s201550_profile_drag= ProfileDrag(cl=[0.518,1.25,2.168],cd=[0.05,0.0148,0.048])
+        e30s201570_profile_drag= ProfileDrag(cl=[0.485,1.25,2.22],cd=[0.05,0.0156,0.048])
+
         naca0012_profile_drag= ProfileDrag(cl=[-1.128,0.0,1.128],cd=[0.038,0.0077,0.038])
 
         # O arquivo .dat deve estar junto com o arquivo deste código, colocar os perfis em uma pasta separada aparentemente gera erros
-        root_foil='e75s25_MIN003.dat'
-        tip_foil='e25s75_MIN003.dat'
-        #root_foil='s1223.dat'
-        #tip_foil='s1223.dat'
+        #root_foil='e75s25_MIN003.dat'
+        #tip_foil='e25s75_MIN003.dat'
+        root_foil='e50s201550_MIN002_R.dat'
+        tip_foil='e30s201570_MIN002_T.dat'
+        #root_foil='s1223_mod2015.dat'
+        #tip_foil='s1223_mod2015.dat'
 
-        root_profile_drag= e75s25_profile_drag
-        tip_profile_drag= e25s75_profile_drag
-        #root_profile_drag= s1223_profile_drag
-        #tip_profile_drag= s1223_profile_drag
+        #root_profile_drag= e75s25_profile_drag
+        #tip_profile_drag= e25s75_profile_drag
+        #root_profile_drag= s1223_mod2015_profile_drag
+        #tip_profile_drag= s1223_mod2015_profile_drag
+        root_profile_drag= e50s201550_profile_drag
+        tip_profile_drag= e30s201570_profile_drag
 
-        self.w_root_clmax= e75s25_clmax
-        self.w_tip_clmax= e25s75_clmax
-        #self.w_root_clmax= s1223_clmax
-        #self.w_tip_clmax= s1223_clmax
+        #self.w_root_clmax= e75s25_clmax
+        #self.w_tip_clmax= e25s75_clmax
+        #self.w_root_clmax= s1223_mod2015_clmax
+        #self.w_tip_clmax= s1223_mod2015_clmax
+        self.w_root_clmax= e50s201550_clmax
+        self.w_tip_clmax= e30s201570_clmax
 
         ########################################## Cálculos de valores de referência (ficar atento à implementação do cg aqui) ##########################################
         self.s_ref= (w_cr*w_baf + ((w_cr+w_ct)/2)*(w_bt-w_baf))
@@ -95,13 +112,13 @@ class Prototype():
         self.ref_span= w_baf+(self.c_med/w_cr)*(w_bt-w_baf)
         
         #Para o volume de cauda vertical
-        self.lvt= ((ev_x-(self.x_cg))**2+(ev_z)**2)**0.5
-        self.svt= (ev_c)*ev_b
-        self.vvt= (self.lvt*self.svt)/(w_bt*self.s_ref)
+        self.lvt= ((ev_x-(self.x_cg))**2+(ev_z-self.z_cg)**2+(eh_b_h)**2)**0.5  # Entra a distância em y também
+        self.svt= 2*(ev_c)*ev_b                                                 # 2 por serem 2 EV's
+        self.vvt= ((self.lvt*self.svt)/(w_bt*self.s_ref))
 
         #Para o volume horizontal    
         self.sht= eh_b*eh_c
-        self.lht= ((eh_x-(self.x_cg))**2+(eh_z)**2)**0.5
+        self.lht= ((eh_x-self.x_cg)**2+(eh_z-self.z_cg)**2)**0.5
         self.vht= (self.lht*self.sht)/(self.c_med*self.s_ref)
 
         #Para a asa
@@ -170,7 +187,7 @@ class Prototype():
                                     span_spacing=Spacing.equal,
                                     #y_duplicate=0.0,
                                     sections=[self.eh_root_section, self.eh_tip_section],
-                                    angle= 0
+                                    angle= self.eh_inc
                                     )
         
         self.ev_surface = Surface(name="Vertical_Stabilizer",

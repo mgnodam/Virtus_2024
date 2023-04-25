@@ -207,7 +207,7 @@ def mtow(p, t, v, m, s, clc, clmax, cdc, cdt, g= 9.81, mu= 0.03, n= 1.2, gamma= 
 
 
 if __name__ == '__main__':
-    print(alt(952,25))
+    print(alt(905,25))
     print(rho(1013,26))
     #print(tracd(8,1013,26))
     #print(v_estol(10,1013,26,0.8,2.04,9.81))

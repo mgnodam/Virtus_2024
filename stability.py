@@ -9,7 +9,7 @@ cma_max= 0
 a_trim_min= 2; a_trim_max= 6
 me_min= 0.06; me_max= 0.2       # Essa margem estática é normalizada com relação à corda da raíz
 #Est. Ddirecional
-vvt_min= 0.04
+vvt_min= 0.04; vvt_max=0.06
 cnb_min= 0
 
 def check_interval(value,min,max):
