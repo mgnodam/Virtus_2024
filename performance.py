@@ -57,7 +57,7 @@ def v_estol(p, t, m, s, clmax, g=9.81):
 
 def fric(p, t, m, s, clc, clmax, v, g= 9.81, mu= 0.03):
 
-    if v <= 1.1*v_estol(p, t, m, s, clmax, g=9.81):
+    if v <= 1.2*v_estol(p, t, m, s, clmax, g=9.81):
         lift_c= lift(p, t, v, s, clc)
         fric= mu*(m*g-lift_c)
     

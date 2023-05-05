@@ -202,7 +202,7 @@ class Simulator():
             self.m= self.score
             self.print_coeffs()                                    # Printa os coeficientes desejados após a otimização
             print('########## MTOW=', self.score,'##########')
-            print('### v_decol=', 1.1*v_estol(self.p, self.t, self.m, self.prototype.s_ref, self.clmax, g=9.81), ' ###')
+            print('### v_decol=', 1.2*v_estol(self.p, self.t, self.m, self.prototype.s_ref, self.clmax, g=9.81), ' ###')
 
         except:
             print('FALHA NA SIMULACAO DE MTOW')
