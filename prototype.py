@@ -1,5 +1,72 @@
 from avlwrapper import *
 
+def g_const(w_bt,ev_z,ev_b):
+    '''
+    Função que calcula o valor relacionado à restrição geométrica
+    '''
+    return w_bt+ev_z+ev_b
+
+def s_ref(w_cr,w_baf,w_ct,w_bt):
+    '''
+    Função que calcula a área alar de uma asa trapezoidal
+    '''
+    return (w_cr*w_baf + ((w_cr+w_ct)/2)*(w_bt-w_baf))
+
+def c_med(s_ref,w_bt):
+    '''
+    Função que calcula a corda média de uma asa trapezoidal
+    '''
+    return s_ref/w_bt
+
+def ref_span(w_baf,c_med,w_cr,w_bt):
+    '''
+    Função que calcula a distância entre as cordas médias, envergadura de referência
+    '''
+    return w_baf+(c_med/w_cr)*(w_bt-w_baf)
+
+def lvt(ev_x,x_cg,ev_z,z_cg,eh_b_h):
+    '''
+    Função que calcula a distância entre o EV e o CG em uma empenagem em H
+    '''
+    # Entra a distância em y também
+    return ((ev_x-(x_cg))**2+(ev_z-z_cg)**2+(eh_b_h)**2)**0.5
+
+def svt(ev_c,ev_b):
+    '''
+    Função que calcula a área de ***DOIS*** EV retangulares
+    '''
+    return 2*(ev_c)*ev_b
+
+def vvt(lvt,svt,w_bt,s_ref):
+    '''
+    Função que calcula o volume de cauda vertical de uma empenagem em H com EV retangular
+    '''
+    return ((lvt*svt)/(w_bt*s_ref))
+
+def sht(eh_b,eh_c):
+    '''
+    Função que calcula a área de um EH retangular
+    '''
+    return eh_b*eh_c
+
+def lht(eh_x,x_cg,eh_z,z_cg):
+    '''
+    Função que calcula a distância entre o EH e o CG
+    '''
+    return ((eh_x-x_cg)**2+(eh_z-z_cg)**2)**0.5
+
+def vht(lht,sht,c_med,s_ref):
+    '''
+    Função que calcula o volume de cauda horizontal de uma empenagem com EH retangular
+    '''
+    return (lht*sht)/(c_med*s_ref)
+
+def ar(b,s):
+    '''
+    Função que calcula a razão de aspecto de uma superfície utilizando a envergadura e área
+    '''
+    return (b**2)/s
+
 class Prototype():
     '''
     Classe responsável por construir a geometria no formato do AVL a partir dos parâmetros de interesse
@@ -39,8 +106,7 @@ class Prototype():
         ev_y= eh_b/2                # Fixando ev_y na ponta do eh
         ev_z= eh_z-ev_b/2           # Ajuste da altura do EV, para ficar sobre o tailboom
         self.ev_b= ev_b             # Envergadura do EV
-        self.ev_cr= ev_c            # Corda da raíz do EV
-        self.ev_ct= ev_ct           # Corda da ponta do EV
+        self.ev_c= ev_c             # Corda do EV
         self.ev_x= ev_x             # Distância horizontal do bordo de atque dos EV's, em relação ao bordo de ataque da asa
         self.ev_y= ev_y             # Distância no eixo Y dos EV's até o plano de simetria do avião
         self.ev_z= ev_z             # Distância vertical do bordo de atque dos EV's, em relação ao bordo de ataque da asa
@@ -54,17 +120,17 @@ class Prototype():
 
         # Efeito solo e restrição geométrica
         self.ge= ge
-        self.g_const= w_bt+ev_z+ev_b # Restrição geométrica
+        self.g_const= g_const(w_bt,ev_z,ev_b) # Restrição geométrica
         
         #Dividindo as envergaduras pela metade devido à simetria. CUIDADO NA HORA DE CALCULAR A ÁREA E OUTRAS PROPRIEDADES MAIS TARDE!!!
-        w_baf_h= w_baf/2
-        w_bt_h= w_bt/2
-        eh_b_h= eh_b/2
+        w_baf_h= self.w_baf/2
+        w_bt_h= self.w_bt/2
+        eh_b_h= self.eh_b/2
 
         ################################################### FIM DAS DEFINIÇÕES GEOMÉTRICAS ###################################################
 
         ################################################### DEFINIÇÃO DOS PERFIS ###################################################
-        #Clmax dos perfis
+        #Clmax dos perfis para detecção do estol
         s1223_clmax= 2.27
         s1223_mod2015_clmax= 2.36
         e75s25_clmax= 2.168 # Peril da raíz
@@ -84,7 +150,7 @@ class Prototype():
 
         naca0012_profile_drag= ProfileDrag(cl=[-1.128,0.0,1.128],cd=[0.038,0.0077,0.038])
 
-        # O arquivo .dat deve estar junto com o arquivo deste código, colocar os perfis em uma pasta separada aparentemente gera erros
+        # O arquivo .dat deve estar junto com o arquivo deste código, colocar os perfis em uma pasta separada, em primeira análise, gera erros
         #root_foil='e75s25_MIN003.dat'
         #tip_foil='e25s75_MIN003.dat'
         root_foil='e50s201550_MIN002_R.dat'
@@ -107,23 +173,23 @@ class Prototype():
         self.w_tip_clmax= e30s201570_clmax
 
         ########################################## Cálculos de valores de referência (ficar atento à implementação do cg aqui) ##########################################
-        self.s_ref= (w_cr*w_baf + ((w_cr+w_ct)/2)*(w_bt-w_baf))
-        self.c_med= self.s_ref/self.w_bt
-        self.ref_span= w_baf+(self.c_med/w_cr)*(w_bt-w_baf)
+        self.s_ref= s_ref(self.w_cr,self.w_baf,self.w_ct,self.w_bt)
+        self.c_med= c_med(self.s_ref,self.w_bt)
+        self.ref_span= ref_span(self.w_baf,self.c_med,self.w_cr,self.w_bt)
         
         #Para o volume de cauda vertical
-        self.lvt= ((ev_x-(self.x_cg))**2+(ev_z-self.z_cg)**2+(eh_b_h)**2)**0.5  # Entra a distância em y também
-        self.svt= 2*(ev_c)*ev_b                                                 # 2 por serem 2 EV's
-        self.vvt= ((self.lvt*self.svt)/(w_bt*self.s_ref))
+        self.svt= svt(self.ev_c,self.ev_b)
+        self.lvt= lvt(self.ev_x,self.x_cg,self.ev_z,self.z_cg,eh_b_h)
+        self.vvt= vvt(self.lvt,self.svt,self.w_bt,self.s_ref)
 
         #Para o volume horizontal    
-        self.sht= eh_b*eh_c
-        self.lht= ((eh_x-self.x_cg)**2+(eh_z-self.z_cg)**2)**0.5
-        self.vht= (self.lht*self.sht)/(self.c_med*self.s_ref)
+        self.sht= sht(self.eh_b,self.eh_c)
+        self.lht= lht(self.eh_x,self.x_cg,self.eh_z,self.z_cg)
+        self.vht= vht(self.lht,self.sht,self.c_med,self.s_ref)
 
         #Para a asa
-        self.ar= (self.w_bt**2)/self.s_ref
-        self.eh_ar= (self.eh_b/self.eh_c)
+        self.ar= ar(self.w_bt,self.s_ref)
+        self.eh_ar= ar(self.eh_b,self.sht)
         
         ################################################### Definindo as secções de cada superfície ###################################################
         self.w_root_section = Section(leading_edge_point=Point(0, 0, w_z),

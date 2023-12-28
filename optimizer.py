@@ -37,10 +37,10 @@ prob.model.set_input_defaults('z_cg', 0.25)
 #Setup do driver
 prob.driver = om.DifferentialEvolutionDriver()
 prob.driver.options['debug_print']= ['desvars', 'nl_cons', 'totals']    # Apenas pra debug no log
-prob.driver.options['pop_size']= 48                                     # Muito importante um número bom pra explorar todo o espaço de design. Quanto mais variável maior a pop.
+prob.driver.options['pop_size']= 48                                     # Muito importante um número bom pra explorar todo o espaço de design. Quanto mais variável maior precisa ser a pop.
 prob.driver.options['penalty_parameter']= 15.0                          # Necessário para controlar a violação das restrições
 prob.driver.options['penalty_exponent']= 2.0
-prob.driver.options['run_parallel']= True                               # Só funciona se conseguir fazer o programa rodar no mpi, fácil pelo wsl
+prob.driver.options['run_parallel']= False                            # Só funciona se conseguir fazer o programa rodar no mpi, fácil pelo wsl
 
 #Adição de um recorder para guardar o histórico da otimização e possibilitar a visualização
 prob.driver.add_recorder(om.SqliteRecorder("cases.db"))
