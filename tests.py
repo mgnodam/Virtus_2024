@@ -4,6 +4,10 @@ from performance import *
 import matplotlib.pyplot as plt
 import time
 
+"""
+Este arquivo contém alguns testes que foram úteis para debugging durante o desenvolvimento do código.
+"""
+
 aviao1= Prototype ( w_baf= 0.2, w_bt= 2.3, w_cr= 0.5372369189280136, w_ct= 0.63, w_z= 0.2650026480983672, w_inc= 0.14042435943743525, w_wo= -0.791133501013034, eh_b= 1.2813260343205437, eh_c= 0.28465138941063833, eh_inc= 0.0, ev_b= 0.3, eh_x= 1.2, eh_z= 0.16815596697984167, x_cg= 0.3, z_cg= 0.25,
 ge=False)
 aviao1_ge= Prototype( w_baf= 0.2, w_bt= 2.3, w_cr= 0.5372369189280136, w_ct= 0.63, w_z= 0.2650026480983672, w_inc= 0.14042435943743525, w_wo= -0.791133501013034, eh_b= 1.2813260343205437, eh_c= 0.28465138941063833, eh_inc= 0.0, ev_b= 0.3, eh_x= 1.2, eh_z= 0.16815596697984167, x_cg= 0.3, z_cg= 0.25,
