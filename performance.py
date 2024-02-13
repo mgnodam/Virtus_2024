@@ -83,16 +83,16 @@ def f_d_sol(v, p, t, m, s, clc, clmax, cdc, g= 9.81, mu= 0.03):
 def d_sol(p, t, v, m, s, clc, clmax, cdc, g= 9.81, mu= 0.03):
 
     v_est= v_estol(p, t, m, s, clmax, g)
-    v_decol= 1.1*v_est
+    v_decol= 1.2*v_est
 
-    d_sol,d_sol_res= quad(f_d_sol, 0, v_decol, args=(p, t, m, s, clc, clmax, cdc, g, mu), limit= 100)
+    d_sol, d_sol_res= quad(f_d_sol, 0, v_decol, args=(p, t, m, s, clc, clmax, cdc, g, mu), limit= 100)
 
     return d_sol
 
 def d_rot(p, t, m, s, clmax, g= 9.81):
 
     v_est= v_estol(p, t, m, s, clmax, g)
-    d_rot= 1.1*v_est/3
+    d_rot= 1.2*v_est/3
 
     return d_rot
 

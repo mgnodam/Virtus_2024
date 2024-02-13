@@ -1,12 +1,10 @@
 __pycache__/
 .vscode/
 reports/
-cases.db
+*.db
 driver_scaling_report.html
 out.json
-#tests.py
-cases.db
-log.optimizer.txt
-log.optimizer
-log.post
+log*
+log_*
 out_trim_test.json
+toDo.txt

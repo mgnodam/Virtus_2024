@@ -33,49 +33,46 @@ for proc_n in range(len(proc_case)):
             and (case.outputs['individual_scorer.ar'] >= 5)
             and (case.outputs['individual_scorer.vht'] <= 0.8)
             and (case.outputs['individual_scorer.vvt'] >= vvt_min)
-            and (case.outputs['individual_scorer.cma'] <= cma_max)  
-            and (case.outputs['individual_scorer.score'] >= 12.1)
-            and (case.outputs['individual_scorer.g_const'] <= 2.9) 
+            and (case.outputs['individual_scorer.score'] >= 7.0)
+            #and (case.outputs['individual_scorer.g_const'] <= 2.9)
             #and (case.outputs['individual_scorer.g_const'] >= 2.8)
-            and (case.outputs['individual_scorer.cg_con'] >=0.0)
             ):
 
             print('-------------- PROTOTIPO:', case.name[-4:]+'-'+str(proc_n)+' --------------\n')
             print(
                 ' Variaveis de design: (',
-                  ' w_baf= ',float(case.outputs['w_baf']),','
-                  ' w_bt= ',float(case.outputs['w_bt']),','
+                  #' w_baf= ',float(case.outputs['w_baf']),','
+                  #' w_bt= ',float(case.outputs['w_bt']),','
                   ' w_cr= ',float(case.outputs['w_cr']),','
                   ' w_ct= ',float(case.outputs['w_ct']),','
                   ' w_z= ',float(case.outputs['w_z']),','
                   ' w_inc= ',float(case.outputs['w_inc']),','
-                  ' w_wo= ',float(case.outputs['w_wo']),','
+                  #' w_wo= ',float(case.outputs['w_wo']),','
                   ' eh_b= ',float(case.outputs['eh_b']),','
                   ' eh_c= ',float(case.outputs['eh_c']),','
                   ' eh_inc= ',float(case.outputs['eh_inc']),','
                   ' ev_b= ',float(case.outputs['ev_b']),','
                   ' eh_x= ',float(case.outputs['eh_x']),','
                   ' eh_z= ',float(case.outputs['eh_z']),','
-                  ' x_cg= ',float(case.outputs['x_cg']),','
-                  ' z_cg= ',float(case.outputs['z_cg']),
+                  ' motor_x= ',float(case.outputs['motor_x']),','
+                  #' motor_z= ',float(case.outputs['motor_z']),','
                   ')'
                   , sep=''
                   )
             
             print(
                 '\n Objetivos\n',
-                  '     MTOW=', float(case.outputs['individual_scorer.score'])
+                  '     Carga paga=', float(case.outputs['individual_scorer.score'])
                   )
             
             print(
                 '\n Restricoes\n',
-                  '     Geometrica=', float(case.outputs['individual_scorer.g_const']),'\n',
+                  #'     Geometrica=', float(case.outputs['individual_scorer.g_const']),'\n',
                   '     VHT=', float(case.outputs['individual_scorer.vht']),'\n',
                   '     VVT=', float(case.outputs['individual_scorer.vvt']),'\n',
                   '     AR=', float(case.outputs['individual_scorer.ar']),'\n',
                   '     AR do EH=', float(case.outputs['individual_scorer.eh_ar']),'\n',
                   '     Cm0=', float(case.outputs['individual_scorer.cm0']),'\n',
-                  '     Cma=', float(case.outputs['individual_scorer.cma']),'\n',
-                  '     Angulo de trimmagem=', float(case.outputs['individual_scorer.a_trim']),'\n',
+                  '     Angulo de trimagem=', float(case.outputs['individual_scorer.a_trim']),'\n',
                   '     Margem Estatica=', float(case.outputs['individual_scorer.me']),'\n'
                   )

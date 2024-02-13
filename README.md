@@ -11,6 +11,8 @@ Aqui estarão as instruções recomendadas para rodar o programa de otimização
 
     faça o download do zip do avlwrapper em https://github.com/jbussemaker/AVLWrapper.git, coloque a pasta avlwrapper em C:/Users/"Seu_usuario"/anaconda3/Lib/site-packages/ e. Em seguida copie o arquivo avl.exe para dentro da pasta avlwrapper, abra o arquivo config e especifice Executable como avl.exe.
 
+    3.1. Para configurar no ubuntu, primeiro instalar o anaconda e fazer o mesmo + > conda install petsc4py
+
 4. Baixar o executável do avl na versão 3.36 e copiar para dentro dessa pasta do avlwrapper (se não achar o executável tente especificar mais o caminho do diretório no arquivo config)
 
 ############################### DESCRIÇÃO.:

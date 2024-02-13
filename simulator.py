@@ -4,6 +4,7 @@ from prototype import *
 from performance import *
 from stability import *
 import numpy as np
+import pandas as pd
 
 class Simulator():
 
@@ -24,6 +25,7 @@ class Simulator():
         self.v= v
         self.rho = rho(p=p,t=t)
         self.mach = mach
+        self.deflex= {}
         self.cl= {}
         self.cd= {}
         self.cm= {}
@@ -32,7 +34,7 @@ class Simulator():
         self.cnb= {}
         self.cl_ge= {}
         self.cd_ge= {}
-        self.a_trim= -6; self.me= -0.2 # Caso não consiga calcular, a pontuação será zerada, mas não dará erro por não ter um valor de a_trim
+        self.a_trim= -6; self.me= -0.2 # Caso não consiga calcular, a pontuação será zerada, mas não dará erro por não ter um valor de a_trim. Algumas simulações dão erro.
         
         # Cl e Cd são armazenados em dicionários com elementos [Ângulo de ataque: Coeficiente]
 
@@ -41,15 +43,17 @@ class Simulator():
     def check_stall(self, results):
 
         stall= False
+        b_stall=0
 
-        for panel_n in range(int(len(results['a']['StripForces']['Wing']['Yle'])/2)):
+        for panel_n in range(int(len(results['a']['StripForces']['Wing']['Yle']))):             # Tinha um /2 aqui, acredito que era um erro
             if results['a']['StripForces']['Wing']['Yle'][panel_n] <= self.prototype.w_baf/2:
                 clmax= self.prototype.w_root_clmax
 
                 if results['a']['StripForces']['Wing']['cl'][panel_n] >= clmax:
                     stall= True
-                    print('Asa em estol')
-                    return stall
+                    b_stall= results['a']['StripForces']['Wing']['Yle'][panel_n] / (self.prototype.w_bt/2) #b_stall é o ponto de estol em % da envergadura
+
+                    return stall, b_stall
 
                 else:
                     stall= False
@@ -57,30 +61,35 @@ class Simulator():
             else:
                 af_len= (self.prototype.w_bt - self.prototype.w_baf)/2
                 af_len_perc= (results['a']['StripForces']['Wing']['Yle'][panel_n] - self.prototype.w_baf/2)/af_len
-                clmax= (af_len_perc)*self.prototype.w_tip_clmax + (1-af_len_perc)*self.prototype.w_root_clmax
+                clmax= (af_len_perc)*self.prototype.w_tip_clmax + (1-af_len_perc)*self.prototype.w_root_clmax           # Interpolando os clmáx na região afilada
 
                 if results['a']['StripForces']['Wing']['cl'][panel_n] >= clmax:
                     stall= True
-                    print('Asa em estol')
-                    return stall
+                    b_stall= results['a']['StripForces']['Wing']['Yle'][panel_n] / (self.prototype.w_bt/2) #b_stall é o ponto de estol em % da envergadura
+                    
+                    return stall, b_stall
 
                 else:
                     stall= False
 
-        return stall
+        return stall, b_stall
 
     # Cria e roda um caso de angulo de ataque definido e armazena os coeficientes desejados
     def run_a(self, a= 0):
 
-        a_case = Case(name='a', alpha=a, density= self.rho, Mach= self.mach, velocity= self.v, X_cg=self.prototype.x_cg, Z_cg=self.prototype.z_cg)
+        #a_case = Case(name='a', alpha=a, density= self.rho, Mach= self.mach, velocity= self.v, X_cg=self.prototype.x_cg, Z_cg=self.prototype.z_cg)
 
-        print(str.format('Calculando coeficientes em alfa = {}',a))
+        #A definição de caso abaixo irá retornar as polares trimadas
+        a_case = Case(name='a', alpha=a, density= self.rho, Mach= self.mach, velocity= self.v, X_cg=self.prototype.x_cg, Z_cg=self.prototype.z_cg, elevator=Parameter(name='elevator', constraint='Cm', value=0.0))
+
+        #print(str.format('Calculando coeficientes em alfa = {}',a))
 
         session = Session(geometry=self.prototype.geometry, cases=[a_case])
         a_results = session.get_results()
 
         try:
-            if not(self.check_stall(a_results)):
+            if not(self.check_stall(a_results)[0]):
+                self.deflex[a]= a_results['a']['Totals']['elevator']
                 self.cl[a]= a_results['a']['Totals']['CLtot']
                 self.cd[a]= a_results['a']['Totals']['CDtot']
                 self.cm[a]= a_results['a']['Totals']['Cmtot']
@@ -94,7 +103,8 @@ class Simulator():
                 raise
 
         except:
-            print('A asa ja se encontra estolada em alfa=', a, 'graus.', 'Os coeficientes nao foram escritos')
+            #print('A asa se encontra estolada em alfa=', a, 'graus.')
+            print('Estol em', self.check_stall(a_results)[1], '%', 'da envergadura')
             raise
 
     #LEMBRANDO... EFEITO SOLO NO VLM É CONHECIDO POR SUPERESTIMAÇÃO, PRINCIPALMENTE EM H/C < 0.7
@@ -144,24 +154,28 @@ class Simulator():
     
     # Método que imprime os coeficientes armazenados
     def print_coeffs(self):
-        print('CL=', self.cl)
-        print('CD=', self.cd)
-        print('CL_ge=', self.cl_ge)
-        print('CD_ge=', self.cd_ge)
-        print('Cm=', self.cm)
-        print('Cma=', self.cma)
-        print('Xnp=', self.xnp)
-        print('X_CG=', self.prototype.x_cg)
-        print('ME=', self.me)
-        print('cnb=', self.cnb)
-        print('vht=', self.prototype.vht)
-        print('vvt=', self.prototype.vvt)
-        print('a_trim=', self.a_trim)
-        print('S_ref=', self.prototype.s_ref)
-        print('AR=', self.prototype.ar)
-        print('eh_AR=', self.prototype.eh_ar)
-        print('g_const=', self.prototype.g_const)
 
+        aero_coeffs= pd.DataFrame([self.cl, self.cd, self.cm, self.deflex], index= ['CL','CD','CM','Prof'])
+        aero_coeffs= aero_coeffs.T
+
+        print('Coeficientes aerodinâmicos:\n', aero_coeffs, sep='')
+        print('CL_ge=', self.cl_ge[0])
+        print('CD_ge=', self.cd_ge[0])
+        print('Envergadura=', round(self.prototype.w_bt,3),'m')
+        print('Transicao=', round(self.prototype.w_baf/self.prototype.w_bt,3)*100,'%','da envergadura')
+        print('Área alar=', round(self.prototype.s_ref,3), 'm^2')
+        print('AR=', round(self.prototype.ar,2))
+        print('AR do EH=', round(self.prototype.eh_ar,2))
+        print('M.A.C.=', round(self.prototype.mac,3), 'm')
+        print('VHT=', round(self.prototype.vht,4))
+        print('VVT=', round(self.prototype.vvt,4))
+        print('X_CG=', round(self.prototype.x_cg/self.prototype.w_cr,3), '% ', 'da corda da asa')
+        print('Z_CG', round(self.prototype.z_cg,3), 'm do chao')
+        print('CG=', round(self.prototype.low_cg,3), 'm abaixo da asa')
+        print('Ângulo de trimagem=', round(self.a_trim,2), 'graus')
+        print('Margem Estatica=', round(self.me,3))
+        #print('g_const=', round(self.prototype.g_const,3))
+        
     # Método que realiza a simulação e pontuação da aeronave. No caso de qualquer erro, a pontuação do indivíduo é zerada
     def scorer(self):
 
@@ -196,17 +210,27 @@ class Simulator():
         
         try:
             #A otimização busca um mínimo, portanto a nossa pontuação é espelhada aqui
-            self.score= mtow(self.p, self.t, self.v, self.prototype.m, self.prototype.s_ref, self.cl_ge[0], self.clmax, self.cd_ge[0], self.cd[0], g= 9.81, mu= 0.03, n= 1.2, gamma= 0)
+            self.mtow= mtow(self.p, self.t, self.v, self.prototype.pv, self.prototype.s_ref, self.cl_ge[0], self.clmax, self.cd_ge[0], self.cd[0], g= 9.81, mu= 0.03, n= 1.2, gamma= 0)
             print('MTOW CALCULADO COM SUCESSO')
-            self.prototype.m= self.score
-            self.m= self.score
-            self.print_coeffs()                                    # Printa os coeficientes desejados após a otimização
-            print('########## MTOW=', self.score,'##########')
-            print('### v_decol=', 1.2*v_estol(self.p, self.t, self.m, self.prototype.s_ref, self.clmax, g=9.81), ' ###')
+            self.prototype.m= self.mtow
 
-        except:
+            self.score= self.mtow - self.prototype.pv
+
+            self.print_coeffs()                                    # Printa os coeficientes desejados após a otimização
+            
+            print('########## MTOW=', round(self.mtow,3),'##########')
+            print('########## Peso Vazio=', round(self.prototype.pv,3),'##########')
+            print('########## Carga paga=', round(self.score,3),'##########')
+            #print('v_decol=', round(1.2*v_estol(self.p, self.t, self.prototype.m, self.prototype.s_ref, self.clmax, g=9.81),3))
+            
+            
+        except: 
             print('FALHA NA SIMULACAO DE MTOW')
             self.score=0
+            
+
+        '''
+        ##### PENALIDADES MANUAIS #####
 
         vht_pen= 0
     
@@ -219,5 +243,6 @@ class Simulator():
         pen= vht_pen
 
         self.score= self.score - pen
+        '''
 
         return self.score
