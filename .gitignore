@@ -8,3 +8,4 @@ log*
 log_*
 out_trim_test.json
 toDo.txt
+out*

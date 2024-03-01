@@ -28,12 +28,15 @@ for proc_n in range(len(proc_case)):
         if (
             #True
             (case.outputs['individual_scorer.a_trim'] <= a_trim_max)
-            and (case.outputs['individual_scorer.a_trim'] >= a_trim_min) 
-            and (case.outputs['individual_scorer.me'] <= 0.40)
-            and (case.outputs['individual_scorer.ar'] >= 5)
-            and (case.outputs['individual_scorer.vht'] <= 0.8)
-            and (case.outputs['individual_scorer.vvt'] >= vvt_min)
-            and (case.outputs['individual_scorer.score'] >= 7.0)
+            and (case.outputs['individual_scorer.a_trim'] >= a_trim_min)
+            and (case.outputs['individual_scorer.x_cg_p'] <=0.365) 
+            and (case.outputs['individual_scorer.x_cg_p'] >= 0.25) 
+            #and (case.outputs['individual_scorer.me'] <= 0.40)
+            #and (case.outputs['individual_scorer.me'] != -0.20)
+            #and (case.outputs['individual_scorer.ar'] >= 5)
+            #and (case.outputs['individual_scorer.vht'] <= 0.8)
+            #and (case.outputs['individual_scorer.vvt'] >= vvt_min)
+            and (case.outputs['individual_scorer.score'] >= 7.8)
             #and (case.outputs['individual_scorer.g_const'] <= 2.9)
             #and (case.outputs['individual_scorer.g_const'] >= 2.8)
             ):
@@ -67,12 +70,15 @@ for proc_n in range(len(proc_case)):
             
             print(
                 '\n Restricoes\n',
-                  #'     Geometrica=', float(case.outputs['individual_scorer.g_const']),'\n',
+                  '     Altura=', float(case.outputs['individual_scorer.h_const']),'\n',
+                  '     Gap do EH=', float(case.outputs['individual_scorer.eh_z_const']),'\n',
+                  '     Gap do CG=', float(case.outputs['individual_scorer.low_cg']),'\n',
                   '     VHT=', float(case.outputs['individual_scorer.vht']),'\n',
                   '     VVT=', float(case.outputs['individual_scorer.vvt']),'\n',
                   '     AR=', float(case.outputs['individual_scorer.ar']),'\n',
                   '     AR do EH=', float(case.outputs['individual_scorer.eh_ar']),'\n',
-                  '     Cm0=', float(case.outputs['individual_scorer.cm0']),'\n',
+                  #'     Cm0=', float(case.outputs['individual_scorer.cm0']),'\n',
+                  '     CG em=', float(case.outputs['individual_scorer.x_cg_p']),'\n',
                   '     Angulo de trimagem=', float(case.outputs['individual_scorer.a_trim']),'\n',
                   '     Margem Estatica=', float(case.outputs['individual_scorer.me']),'\n'
                   )

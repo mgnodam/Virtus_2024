@@ -36,9 +36,9 @@ def check_max(value,max):
     else:
         return False
 
-def me(x_np, x_cg, w_cr):   # x_cg aqui não é porcentagem, mas sim a posição do cg
+def me(x_np, x_cg, mac):   # x_cg aqui não é porcentagem, mas sim a posição do cg
 
-    me= (x_np - x_cg)/w_cr
+    me= (x_np - x_cg)/mac
 
     return me
 

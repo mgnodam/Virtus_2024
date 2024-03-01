@@ -30,11 +30,11 @@ class Simulator():
         self.cd= {}
         self.cm= {}
         self.cma= {}
-        self.xnp= {}
+        self.xnp= 0
         self.cnb= {}
         self.cl_ge= {}
         self.cd_ge= {}
-        self.a_trim= -6; self.me= -0.2 # Caso não consiga calcular, a pontuação será zerada, mas não dará erro por não ter um valor de a_trim. Algumas simulações dão erro.
+        self.a_trim= -20; self.me= -0.2 # Caso não consiga calcular, a pontuação será zerada, mas não dará erro por não ter um valor de a_trim. Algumas simulações dão erro.
         
         # Cl e Cd são armazenados em dicionários com elementos [Ângulo de ataque: Coeficiente]
 
@@ -79,7 +79,7 @@ class Simulator():
 
         #a_case = Case(name='a', alpha=a, density= self.rho, Mach= self.mach, velocity= self.v, X_cg=self.prototype.x_cg, Z_cg=self.prototype.z_cg)
 
-        #A definição de caso abaixo irá retornar as polares trimadas
+        #A definição de caso abaixo irá retornar a polar trimada, a definição acima retornará a polar sem deflexão de superfícies
         a_case = Case(name='a', alpha=a, density= self.rho, Mach= self.mach, velocity= self.v, X_cg=self.prototype.x_cg, Z_cg=self.prototype.z_cg, elevator=Parameter(name='elevator', constraint='Cm', value=0.0))
 
         #print(str.format('Calculando coeficientes em alfa = {}',a))
@@ -94,7 +94,6 @@ class Simulator():
                 self.cd[a]= a_results['a']['Totals']['CDtot']
                 self.cm[a]= a_results['a']['Totals']['Cmtot']
                 self.cma[a]= a_results['a']['StabilityDerivatives']['Cma']
-                self.xnp[a]= a_results['a']['StabilityDerivatives']['Xnp']
                 self.cnb[a]= a_results['a']['StabilityDerivatives']['Cnb']
 
                 return a_results
@@ -134,7 +133,7 @@ class Simulator():
             except:
                 self.a_stall= a-1
                 self.clmax= self.cl[a-1]
-                print('Ângulo de estol entre=', a-1,'e', a, 'graus')
+                print('Angulo de estol entre=', a-1,'e', a, 'graus')
                 break
     
     # Roda uma simulação com o avião trimmado com momento zerado, pra encontrar o ângulo de trimmagem e a margem estática
@@ -145,7 +144,8 @@ class Simulator():
         trim_results = session.get_results()
 
         self.a_trim= trim_results['trimmed']['Totals']['Alpha']
-        self.me= me(self.xnp[0], self.prototype.x_cg, self.prototype.w_cr)
+        self.xnp= trim_results['trimmed']['StabilityDerivatives']['Xnp']
+        self.me= me(self.xnp, self.prototype.x_cg, self.prototype.mac)
 
     # Método que escreve os resultados mais recentes em um arquivo json nomeado
     def write_results(self, filename):
@@ -158,23 +158,30 @@ class Simulator():
         aero_coeffs= pd.DataFrame([self.cl, self.cd, self.cm, self.deflex], index= ['CL','CD','CM','Prof'])
         aero_coeffs= aero_coeffs.T
 
-        print('Coeficientes aerodinâmicos:\n', aero_coeffs, sep='')
-        print('CL_ge=', self.cl_ge[0])
-        print('CD_ge=', self.cd_ge[0])
+        print('--------------OUTPUTS-----------------\n')
+        print('--------------Aerodinamica-----------------')
+        print('Coeficientes aerodinamicos:\n', aero_coeffs, sep='')
+        print('CL em corrida=', self.cl_ge[0])
+        print('CD em corrida=', self.cd_ge[0])
         print('Envergadura=', round(self.prototype.w_bt,3),'m')
         print('Transicao=', round(self.prototype.w_baf/self.prototype.w_bt,3)*100,'%','da envergadura')
-        print('Área alar=', round(self.prototype.s_ref,3), 'm^2')
+        print('Area alar=', round(self.prototype.s_ref,3), 'm^2')
         print('AR=', round(self.prototype.ar,2))
         print('AR do EH=', round(self.prototype.eh_ar,2))
         print('M.A.C.=', round(self.prototype.mac,3), 'm')
+        print('--------------Controle e Estabilidade-----------------')
         print('VHT=', round(self.prototype.vht,4))
         print('VVT=', round(self.prototype.vvt,4))
-        print('X_CG=', round(self.prototype.x_cg/self.prototype.w_cr,3), '% ', 'da corda da asa')
-        print('Z_CG', round(self.prototype.z_cg,3), 'm do chao')
+        print('X_CG=', round(self.prototype.x_cg_p,3), '% ', 'da corda da asa')
+        print('Z_CG=', round(self.prototype.z_cg,3), 'm do chao')
         print('CG=', round(self.prototype.low_cg,3), 'm abaixo da asa')
-        print('Ângulo de trimagem=', round(self.a_trim,2), 'graus')
+        print('Angulo de trimagem=', round(self.a_trim,2), 'graus')
         print('Margem Estatica=', round(self.me,3))
-        #print('g_const=', round(self.prototype.g_const,3))
+        print('--------------Restricoes-----------------')
+        print('Altura total=', round(self.prototype.h_const,2), 'm')
+        print('Altura do EH com relacao a asa=', round(self.prototype.eh_z_const,3), 'm')
+        print('--------------Estruturas-----------------')
+        print('Peso Vazio=', round(self.prototype.pv,3),'kg')
         
     # Método que realiza a simulação e pontuação da aeronave. No caso de qualquer erro, a pontuação do indivíduo é zerada
     def scorer(self):
@@ -214,13 +221,15 @@ class Simulator():
             print('MTOW CALCULADO COM SUCESSO')
             self.prototype.m= self.mtow
 
-            self.score= self.mtow - self.prototype.pv
+            self.cp= self.mtow - self.prototype.pv
+
+            self.score= self.cp
 
             self.print_coeffs()                                    # Printa os coeficientes desejados após a otimização
             
-            print('########## MTOW=', round(self.mtow,3),'##########')
-            print('########## Peso Vazio=', round(self.prototype.pv,3),'##########')
-            print('########## Carga paga=', round(self.score,3),'##########')
+            print('--------------Desempenho-----------------')
+            print('MTOW=', round(self.mtow,3),'kg')
+            print('########## Carga paga=', round(self.cp,3),'kg ##########')
             #print('v_decol=', round(1.2*v_estol(self.p, self.t, self.prototype.m, self.prototype.s_ref, self.clmax, g=9.81),3))
             
             
@@ -229,20 +238,28 @@ class Simulator():
             self.score=0
             
 
-        '''
+        
         ##### PENALIDADES MANUAIS #####
 
-        vht_pen= 0
+        a_trim_pen= 0
+        x_cg_p_pen= 0
     
-        if self.prototype.vht > vht_max:
-            vht_pen= 2+ 5*(self.prototype.vht - vht_max)
+        if self.a_trim > a_trim_max:
+            a_trim_pen= 2+ 10*(self.a_trim - a_trim_max)
 
-        if self.prototype.vht < vht_min:
-            vht_pen= 2+ 5*(vht_min - self.prototype.vht)
+        if self.a_trim < a_trim_min:
+            a_trim_pen= 2+ 10*(a_trim_min - self.a_trim)
 
-        pen= vht_pen
+        if self.prototype.x_cg_p > 0.365:
+            a_trim_pen= 2+ 10*(self.prototype.x_cg_p - 0.365)
+
+        if self.prototype.x_cg_p < 0.25:
+            a_trim_pen= 2+ 10*(0.25 - self.prototype.x_cg_p)
+
+        pen= a_trim_pen + x_cg_p_pen
 
         self.score= self.score - pen
-        '''
+        
+        
 
         return self.score

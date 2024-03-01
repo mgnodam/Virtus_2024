@@ -2,13 +2,13 @@ from avlwrapper import *
 from mass import *
 from support import *
 
-def g_const(w_bt,ev_z,ev_b):
+def h_const(ev_z,ev_b):
     '''
     Função que calcula o valor relacionado à restrição geométrica
 
     w_bt[m],ev_z[m],ev_b[m] -> g_const[m]
     '''
-    return w_bt+ev_z+ev_b
+    return ev_z+ev_b
 
 def s_ref(w_cr,w_baf,w_ct,w_bt):
     '''
@@ -76,12 +76,12 @@ def ar(b,s):
     '''
     return (b**2)/s
 
-def l_boom(motor_x, fus_l, eh_x):
+def l_boom(fus_l, eh_x):
     '''
-    Função que calcula o comprimento do tailboom em função do comprimento da fuselagem e posição do motor
+    Função que calcula o comprimento do tailboom em função do comprimento da fuselagem, posição do eh e corda da raíz. Assumindo o início do boom na metade da fuselagem
     '''
-    #motor_x pode ser negativo e será no caso de aeronave convencional
-    return eh_x-(fus_l+motor_x)
+
+    return eh_x-fus_l*0.5   # Boom começando no meio da fuselagem
 
 
 class Prototype():
@@ -94,7 +94,7 @@ class Prototype():
     O número de painéis no AVL é ajustado diretamente no código desta classe.
     '''
 
-    def __init__(self, w_cr, w_ct, w_z, w_inc, eh_b, eh_c, eh_inc, ev_b, eh_x, eh_z, motor_x, motor_z= 0.24, fus_h= 0.12, fus_z= 0.10, fus_l= 0.55, fus_w= 0.24, w_wo= 0, ge= False):
+    def __init__(self, w_cr, w_ct, w_z, w_inc, eh_b, eh_c, eh_inc, ev_b, eh_x, eh_z, motor_x, motor_z= 0.24, w_wo= 0, ge= False):
         
         #w_ct são frações (0 a 1) de outra quantidade. Para facilitar a restrição na otimização
 
@@ -115,7 +115,7 @@ class Prototype():
         self.eh_c= eh_c             # Corda do EH
         self.eh_inc= eh_inc         # Ângulo de incidência do EH
         self.eh_x= eh_x             # Distância horizontal do bordo de atque do EH, em relação ao bordo de ataque da asa
-        self.eh_z= eh_z             # Distância vertical do bordo de atque do EH
+        self.eh_z= eh_z             # Distância vertical do bordo de atque do EH, em relação ao solo
 
         # EV
         ev_c= eh_c                  # Na configuração de empenagem em H a corda do ev é igual à do eh
@@ -133,13 +133,12 @@ class Prototype():
         self.motor_z= motor_z       # Posição vertical do motor
 
         # FUSELAGEM E TAILBOOM
-        fus_h= w_z-fus_z            # Colocando a asa no topo da fuselagem
-        self.fus_z= fus_z           # Altura do chão da fuselagem até o solo
-        self.fus_l= fus_l           # Comprimento da fuselagem
-        self.fus_w= fus_w           # Largura da fuselagem
+        fus_h= self.w_cr*0.12       # Modelando as placas da fuselagem como retângulos de altura = 12% da corda da raíz
+        self.fus_z= self.w_z - fus_h*0.5           # Posicionando o centro da fuselagem coincidente com a asa
+        self.fus_l= 1.1*self.w_cr           # Comprimento da fuselagem
         self.fus_h= fus_h           # Altura da fuselagem
         #self.x0_boom= self.fus_l-self.motor_x
-        self.boom_l= l_boom(self.motor_x, self.fus_l, self.eh_x)
+        self.boom_l= l_boom(self.fus_l, self.eh_x)
 
         #VALORES DE REFERÊNCIA (ficar atento à implementação do cg aqui)
         self.s_ref= s_ref(self.w_cr,self.w_baf,self.w_ct,self.w_bt)
@@ -154,9 +153,9 @@ class Prototype():
         self.ar= ar(self.w_bt,self.s_ref)
         self.eh_ar= ar(self.eh_b,self.sht)
 
-        # EFEITO SOLO E RESTRIÇÃO GEOMÉTRICA
-        self.ge= ge
-        #self. = g_const(w_bt,ev_z,ev_b) # Restrição geométrica
+        # RESTRIÇÕES GEOMÉTRICAS
+        self.h_const = h_const(ev_z,ev_b) # Restrição geométrica de altura
+        self.eh_z_const= self.eh_z - self.w_z # Restrição geométrica para eh acima da asa
         
         #Dividindo as envergaduras pela metade devido à simetria. CUIDADO NA HORA DE CALCULAR A ÁREA E OUTRAS PROPRIEDADES MAIS TARDE!!!
         w_baf_h= self.w_baf/2
@@ -165,9 +164,10 @@ class Prototype():
  
  ################################################### DEFINIÇÕES DE MASSA E ESTABILIDADE ###################################################
         # ESTABILIDADE
-        self.pv= total_m(self.s_ref, self.sht, self.svt, self.fus_w, self.fus_h, self.fus_l, self.boom_l)
-        self.x_cg= cg(self.s_ref, self.w_z, self.w_cr, self.sht, self.eh_x, self.eh_z, self.eh_c, self.svt, self.ev_x, self.ev_z, self.ev_c, self.fus_z, self.fus_w, self.fus_h, self.fus_l, self.boom_l, self.motor_x, self.motor_z)[0]
-        self.z_cg= cg(self.s_ref, self.w_z, self.w_cr, self.sht, self.eh_x, self.eh_z, self.eh_c, self.svt, self.ev_x, self.ev_z, self.ev_c, self.fus_z, self.fus_w, self.fus_h, self.fus_l, self.boom_l, self.motor_x, self.motor_z)[1]
+        self.pv= total_m(self.s_ref, self.sht, self.svt, self.fus_h, self.fus_l, self.boom_l)
+        self.x_cg= cg(self.s_ref, self.w_z, self.w_cr, self.sht, self.eh_x, self.eh_z, self.eh_c, self.svt, self.ev_x, self.ev_z, self.ev_c, self.fus_z, self.fus_h, self.fus_l, self.boom_l, self.motor_x, self.motor_z)[0]
+        self.z_cg= cg(self.s_ref, self.w_z, self.w_cr, self.sht, self.eh_x, self.eh_z, self.eh_c, self.svt, self.ev_x, self.ev_z, self.ev_c, self.fus_z, self.fus_h, self.fus_l, self.boom_l, self.motor_x, self.motor_z)[1]
+        self.x_cg_p= self.x_cg/self.w_cr    # Posição do CG como fração da corda
 
         self.lvt= lvt(self.ev_x, self.ev_c, self.x_cg)
         self.vvt= vvt(self.lvt,self.svt,self.w_bt,self.s_ref)
@@ -180,12 +180,12 @@ class Prototype():
 ################################################### DEFINIÇÃO DOS PERFIS ###################################################
         #Clmax dos perfis para detecção do estol
         e50s201550_clmax= 2.195 # Peril da raíz
-        e30s201570_clmax= 2.243  # Perfil da ponta
+        e30s201570_clmax= 2.243 # Perfil da ponta
         
         #Definindo as polares para contabilização do arrasto parasita em cada perfil. Também vindo do xf
 
-        e50s201550_profile_drag= ProfileDrag(cl=[0.518,1.25,2.168],cd=[0.05,0.0148,0.048])
-        e30s201570_profile_drag= ProfileDrag(cl=[0.485,1.25,2.22],cd=[0.05,0.0156,0.048])
+        e50s201550_profile_drag= ProfileDrag(cl=[-0.245,1.15,2.195],cd=[0.1896,0.015,0.0485])
+        e30s201570_profile_drag= ProfileDrag(cl=[-0.26,1.15,2.243],cd=[0.192,0.015,0.048])
 
         naca0012_profile_drag= ProfileDrag(cl=[-1.128,0.0,1.128],cd=[0.038,0.0077,0.038])
 
@@ -216,7 +216,7 @@ class Prototype():
                                     chord=w_ct,
                                     airfoil=FileAirfoil(tip_foil),
                                     profile_drag= tip_profile_drag,
-                                    angle= w_wo
+                                    angle= self.w_wo
                                     )
         
         self.elevator = Control(name="elevator",
@@ -252,9 +252,9 @@ class Prototype():
         
 ######################################################## Definindo as superfícies com base nas secções ########################################################
         self.wing_surface = Surface(name="Wing",
-                                    n_chordwise=16,
+                                    n_chordwise=12,
                                     chord_spacing=Spacing.cosine,
-                                    n_spanwise=25,
+                                    n_spanwise=22,
                                     span_spacing=Spacing.neg_sine,
                                     #y_duplicate=0.0,
                                     sections=[self.w_root_section,self.w_trans_section, self.w_tip_section],
@@ -264,7 +264,7 @@ class Prototype():
         self.eh_surface = Surface(name="Horizontal_Stabilizer",
                                     n_chordwise=8,
                                     chord_spacing=Spacing.cosine,
-                                    n_spanwise=15,
+                                    n_spanwise=10,
                                     span_spacing=Spacing.equal,
                                     #y_duplicate=0.0,
                                     sections=[self.eh_root_section, self.eh_tip_section],
@@ -274,7 +274,7 @@ class Prototype():
         self.ev_surface = Surface(name="Vertical_Stabilizer",
                                     n_chordwise=8,
                                     chord_spacing=Spacing.cosine,
-                                    n_spanwise=15,
+                                    n_spanwise=8,
                                     span_spacing=Spacing.equal,
                                     #y_duplicate=0.0,
                                     sections=[self.ev_root_section, self.ev_tip_section]

@@ -1,26 +1,28 @@
 """
 Modulo dedicado a estimar as propriedades de massa e inercia de cada protótipo
+
+Configuração atual 24/02/2024 - Fuselagem e tailboom de placas, elementos integrados à asa.
 """
 
 # Dados de densidade das estruturas do avião
-dens_w= 1       #kg/m2
-dens_fus= 46.296  #kg/m3 considerando fuselagem pesando 400 g
-dens_boom= 0.8    #kg/m
-dens_stab= 0.8    #kg/m2
+dens_w= 0.9       #kg/m2
+dens_fus= 2.3138507103521686  #kg/m2 - Considerando DivinyCell com 2 camadas de carbono em cada lado
+dens_boom= 0.4627701420704337    #kg/m - Com o mesmo material da fuselagem, com largura média de 10 cm e contabilizando já duas placas
+dens_stab= 1.0328202094747172    #kg/m2
 
 # Dados de massa dos componentes principais em kg
 
-m_batt= 0.60
-m_motor= 0.540      # Motor + hélice
-m_tdp= 0.331
-m_beq= 0.300
+m_batt= 0.60    # kg
+m_motor= 0.540      # kg- Motor + hélice
+m_tdp= 0.331 + 0.05    # kg - TDP + Rodas e rolamentos
+m_beq= 0.300 + 0.05 + 0.05    # kg - Garfo de aço + Rodas e Rolamentos + Mancais e rolamentos do mecanismo
 
 # Dados geométricos fixados
 
-def total_m(w_s, eh_s, ev_s, fus_w, fus_h, fus_l, boom_l):
+def total_m(w_s, eh_s, ev_s, fus_h, fus_l, boom_l):
 
     m_w= dens_w*w_s
-    m_fus= dens_fus*fus_w*fus_h*fus_l
+    m_fus= 2*dens_fus*fus_h*fus_l # Contando a fuselagem como 2 placas paralelas
     m_boom= dens_boom*boom_l
     m_eh= dens_stab*eh_s
     m_ev= dens_stab*ev_s
@@ -29,29 +31,31 @@ def total_m(w_s, eh_s, ev_s, fus_w, fus_h, fus_l, boom_l):
 
     return m_total
 
-def cg(w_s, w_z, w_cr, eh_s, eh_x, eh_z, eh_c, ev_s, ev_x, ev_z, ev_c, fus_z, fus_w, fus_h, fus_l, boom_l, motor_x, motor_z):
+def cg(w_s, w_z, w_cr, eh_s, eh_x, eh_z, eh_c, ev_s, ev_x, ev_z, ev_c, fus_z, fus_h, fus_l, boom_l, motor_x, motor_z):
 
     m_w= dens_w*w_s
-    m_fus= dens_fus*fus_w*fus_h*fus_l
+    m_fus= 2*dens_fus*fus_h*fus_l # Contando a fuselagem como 2 placas paralelas
     m_boom= dens_boom*boom_l
     m_eh= dens_stab*eh_s
     m_ev= dens_stab*ev_s
 
-    # Posições do cg não especificadas:
+    # Definição de posições do cg não especificadas:
     #X
-    fus_x= fus_l*0.4 + motor_x
-    boom_x= boom_l*0.4 + fus_l + motor_x
-    batt_x= fus_l*0.25 + motor_x
-    tdp_x= fus_l*0.8 + motor_x
-    beq_x= fus_l*0.1 + motor_x
+    #Considera-se a fuselagem se iniciando junto ao bordo de ataque da asa
+    fus_x= fus_l*0.15                   # Considerando 10% da fuselagem à frente do bordo de ataque, CG da fuselagem em 25%
+    boom_x= boom_l*0.33 + fus_l*0.40     # Considerando  o tailboom iniciando na metade da fuselagem (20% dela está para frente) 
+    batt_x= fus_l*0.00                  # Considerando 10% da fuselagem à frente do bordo de ataque, bateria em 10% da fuselagem
+    tdp_x= fus_l*0.55                   # Considerando 10% da fuselagem à frente do bordo de ataque
+    beq_x= -fus_l*0.2                   # Considerando 10% da fuselagem à frente do bordo de ataque
+    motor_x= motor_x - 0.1*fus_l        # Considerando 10% da fuselagem à frente do bordo de ataque
     #Z
-    fus_z= fus_z+0.5*fus_h              # O input de altura da fuselagem se refere ao chão da mesma
-    boom_z= (fus_z + eh_z)*0.5
-    batt_z= fus_z
-    tdp_z= fus_z - 0.5*fus_h
-    beq_z= fus_z - 0.2*fus_h
+    fus_z= fus_z+0.5*fus_h              # O input de altura da fuselagem se refere ao chão da mesma, transformando no CG da fuselagem
+    boom_z= fus_z*0.67 + eh_z*0.33
+    batt_z= fus_z- 0.25*fus_h           # 1/4 da Altura da fuselagem
+    tdp_z= fus_z - 0.75*fus_h           # 1/4 da altura da fuselagem abaixo do Chão da fuselagem
+    beq_z= fus_z - 0.5*fus_h            # Chão da fuselagem
 
-    # Contribuição de cada componente:
+    # Contribuição de cada componente (massa x posição do cg):
     #X
     cx_w= m_w*(w_cr/3)
     cx_eh= m_eh*(eh_x + eh_c/3)
@@ -75,8 +79,8 @@ def cg(w_s, w_z, w_cr, eh_s, eh_x, eh_z, eh_c, ev_s, ev_x, ev_z, ev_c, fus_z, fu
     cz_beq= m_beq*beq_z
 
     #CG:
-    x_cg= ((cx_w + cx_eh + cx_ev + cx_fus + cx_boom + cx_batt + cx_motor + cx_tdp + cx_beq))/total_m(w_s, eh_s, ev_s, fus_w, fus_h , fus_l, boom_l)
-    z_cg= ((cz_w + cz_eh + cz_ev + cz_fus + cz_boom + cz_batt + cz_motor + cz_tdp + cz_beq))/total_m(w_s, eh_s, ev_s, fus_w, fus_h , fus_l, boom_l)
+    x_cg= ((cx_w + cx_eh + cx_ev + cx_fus + cx_boom + cx_batt + cx_motor + cx_tdp + cx_beq))/total_m(w_s, eh_s, ev_s, fus_h , fus_l, boom_l)
+    z_cg= ((cz_w + cz_eh + cz_ev + cz_fus + cz_boom + cz_batt + cz_motor + cz_tdp + cz_beq))/total_m(w_s, eh_s, ev_s, fus_h , fus_l, boom_l)
 
     return [x_cg,z_cg]
 
