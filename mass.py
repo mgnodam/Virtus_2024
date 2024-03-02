@@ -42,12 +42,12 @@ def cg(w_s, w_z, w_cr, eh_s, eh_x, eh_z, eh_c, ev_s, ev_x, ev_z, ev_c, fus_z, fu
     # Definição de posições do cg não especificadas:
     #X
     #Considera-se a fuselagem se iniciando junto ao bordo de ataque da asa
-    fus_x= fus_l*0.15                   # Considerando 10% da fuselagem à frente do bordo de ataque, CG da fuselagem em 25%
-    boom_x= boom_l*0.33 + fus_l*0.40     # Considerando  o tailboom iniciando na metade da fuselagem (20% dela está para frente) 
-    batt_x= fus_l*0.00                  # Considerando 10% da fuselagem à frente do bordo de ataque, bateria em 10% da fuselagem
-    tdp_x= fus_l*0.55                   # Considerando 10% da fuselagem à frente do bordo de ataque
-    beq_x= -fus_l*0.2                   # Considerando 10% da fuselagem à frente do bordo de ataque
-    motor_x= motor_x - 0.1*fus_l        # Considerando 10% da fuselagem à frente do bordo de ataque
+    fus_x= fus_l*0.10                   # Considerando 15% da fuselagem à frente do bordo de ataque, CG da fuselagem em 25%
+    boom_x= boom_l*0.33 + fus_l*0.35     # Considerando  o tailboom iniciando na metade da fuselagem (15% dela está para frente) 
+    batt_x= fus_l*0.00                  # Considerando 15% da fuselagem à frente do bordo de ataque, bateria em 15% da fuselagem
+    tdp_x= fus_l*0.30                   # Considerando 15% da fuselagem à frente do bordo de ataque
+    beq_x= -fus_l*0.2                   # Considerando 15% da fuselagem à frente do bordo de ataque
+    motor_x= motor_x                    # 
     #Z
     fus_z= fus_z+0.5*fus_h              # O input de altura da fuselagem se refere ao chão da mesma, transformando no CG da fuselagem
     boom_z= fus_z*0.67 + eh_z*0.33

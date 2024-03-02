@@ -7,13 +7,13 @@ proc_case=[]
 if (np > 1):
     for p in range(np):
 
-        crp= om.CaseReader('cases.db_'+str(p))
+        crp= om.CaseReader('./logs/20240301_1.db'+str(p))
         driver_cases = crp.list_cases('driver')
         cases = crp.get_cases()
         proc_case.append(cases)
 
 else:
-    crp= om.CaseReader('cases.db')
+    crp= om.CaseReader('./logs/20240301_1.db')
     driver_cases = crp.list_cases('driver')
     cases = crp.get_cases()
     proc_case.append(cases)
@@ -31,12 +31,12 @@ for proc_n in range(len(proc_case)):
             and (case.outputs['individual_scorer.a_trim'] >= a_trim_min)
             and (case.outputs['individual_scorer.x_cg_p'] <=0.365) 
             and (case.outputs['individual_scorer.x_cg_p'] >= 0.25) 
-            #and (case.outputs['individual_scorer.me'] <= 0.40)
-            #and (case.outputs['individual_scorer.me'] != -0.20)
+            and (case.outputs['individual_scorer.me'] <= me_max)
+            and (case.outputs['individual_scorer.me'] >= me_min)
             #and (case.outputs['individual_scorer.ar'] >= 5)
             #and (case.outputs['individual_scorer.vht'] <= 0.8)
             #and (case.outputs['individual_scorer.vvt'] >= vvt_min)
-            and (case.outputs['individual_scorer.score'] >= 7.8)
+            and (case.outputs['individual_scorer.score'] >= 8.2)
             #and (case.outputs['individual_scorer.g_const'] <= 2.9)
             #and (case.outputs['individual_scorer.g_const'] >= 2.8)
             ):

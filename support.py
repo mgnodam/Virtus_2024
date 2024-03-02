@@ -141,7 +141,7 @@ def mac(x, w_bt, w_baf, w_cr, w_ct):
 
     return (2/s_ref) * (int_reta+int_trap)
 
-    
+
 
 ##### TESTES #####
 

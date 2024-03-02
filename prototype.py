@@ -135,7 +135,7 @@ class Prototype():
         # FUSELAGEM E TAILBOOM
         fus_h= self.w_cr*0.12       # Modelando as placas da fuselagem como retângulos de altura = 12% da corda da raíz
         self.fus_z= self.w_z - fus_h*0.5           # Posicionando o centro da fuselagem coincidente com a asa
-        self.fus_l= 1.1*self.w_cr           # Comprimento da fuselagem
+        self.fus_l= 1.15*self.w_cr           # Comprimento da fuselagem
         self.fus_h= fus_h           # Altura da fuselagem
         #self.x0_boom= self.fus_l-self.motor_x
         self.boom_l= l_boom(self.fus_l, self.eh_x)
@@ -181,23 +181,29 @@ class Prototype():
         #Clmax dos perfis para detecção do estol
         e50s201550_clmax= 2.195 # Peril da raíz
         e30s201570_clmax= 2.243 # Perfil da ponta
+
+        min1112_clmax= 2.42 # Peril da raíz
+        min1209_clmax= 2.38 # Perfil da ponta
         
         #Definindo as polares para contabilização do arrasto parasita em cada perfil. Também vindo do xf
 
         e50s201550_profile_drag= ProfileDrag(cl=[-0.245,1.15,2.195],cd=[0.1896,0.015,0.0485])
         e30s201570_profile_drag= ProfileDrag(cl=[-0.26,1.15,2.243],cd=[0.192,0.015,0.048])
 
+        min1112_profile_drag= ProfileDrag(cl=[0.4,1.65,2.42],cd=[0.085, 0.015, 0.0269])
+        min1209_profile_drag= ProfileDrag(cl=[0.4, 1.25, 2.38],cd=[0.06, 0.0177, 0.043])
+
         naca0012_profile_drag= ProfileDrag(cl=[-1.128,0.0,1.128],cd=[0.038,0.0077,0.038])
 
         # O arquivo .dat deve estar junto com o arquivo deste código, colocar os perfis em uma pasta separada, em primeira análise, gera erros
-        root_foil='e50s201550_MIN002_R.dat'
-        tip_foil='e30s201570_MIN002_T.dat'
+        root_foil='MIN1112.dat'
+        tip_foil='MIN1209.dat'
 
-        root_profile_drag= e50s201550_profile_drag
-        tip_profile_drag= e30s201570_profile_drag
+        root_profile_drag= min1112_profile_drag
+        tip_profile_drag= min1209_profile_drag
 
-        self.w_root_clmax= e50s201550_clmax
-        self.w_tip_clmax= e30s201570_clmax
+        self.w_root_clmax= min1112_clmax
+        self.w_tip_clmax= min1209_clmax
         
 ################################################### Definindo as secções de cada superfície ###################################################
         self.w_root_section = Section(leading_edge_point=Point(0, 0, w_z),

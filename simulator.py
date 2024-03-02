@@ -125,7 +125,18 @@ class Simulator():
     def run_stall(self):
     
          
-        for a in np.arange(5,31,1):
+        for a in np.arange(5,12,2):
+            
+            try:
+                self.run_a(a)
+
+            except:
+                self.a_stall= a-1
+                self.clmax= self.cl[a-1]
+                print('Angulo de estol entre=', a-1,'e', a, 'graus')
+                break
+
+        for a in np.arange(12,31,1):
             
             try:
                 self.run_a(a)
@@ -236,8 +247,8 @@ class Simulator():
         except: 
             print('FALHA NA SIMULACAO DE MTOW')
             self.score=0
-            
-
+            self.cp=0
+    
         
         ##### PENALIDADES MANUAIS #####
 

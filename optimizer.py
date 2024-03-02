@@ -1,3 +1,4 @@
+
 import openmdao.api as om
 from prototype import *
 from simulator import *
@@ -19,16 +20,16 @@ individual_outputs= ['score','cp', 'vht', 'vvt', 'a_trim', 'me', 'ar', 'eh_ar', 
 prob.model.add_subsystem('individual_scorer', Individual(), promotes_inputs= individual_inputs)
 
 prob.model.set_input_defaults('w_cr', 0.57)
-prob.model.set_input_defaults('w_ct', 0.385)
+prob.model.set_input_defaults('w_ct', 0.438)
 prob.model.set_input_defaults('w_z', 0.18)
-prob.model.set_input_defaults('w_inc', -2.14)
-prob.model.set_input_defaults('eh_b', 1.174)
-prob.model.set_input_defaults('eh_c', 0.26)
-prob.model.set_input_defaults('eh_inc', -1.19)
-prob.model.set_input_defaults('ev_b', 0.24)
-prob.model.set_input_defaults('eh_x', 1.051)
+prob.model.set_input_defaults('w_inc', 0.6)
+prob.model.set_input_defaults('eh_b', 1.00)
+prob.model.set_input_defaults('eh_c', 0.269)
+prob.model.set_input_defaults('eh_inc', -0.24)
+prob.model.set_input_defaults('ev_b', 0.182)
+prob.model.set_input_defaults('eh_x', 1.08)
 prob.model.set_input_defaults('eh_z', 0.25)
-prob.model.set_input_defaults('motor_x', -0.218)
+prob.model.set_input_defaults('motor_x', -0.157)
 
 #Setup do driver de otimização diferencial
 
@@ -55,7 +56,7 @@ prob.driver.options['elitism']= True
 '''
 
 #Adição de um recorder para guardar o histórico da otimização e possibilitar a visualização
-prob.driver.add_recorder(om.SqliteRecorder("20242027_1.db"))
+prob.driver.add_recorder(om.SqliteRecorder("./logs/20240301_1.db"))
 prob.driver.recording_options['includes'] = ['*']
 prob.driver.recording_options['record_objectives'] = True
 prob.driver.recording_options['record_constraints'] = True
@@ -101,4 +102,4 @@ prob.run_driver()
 
 # Incluindo um report em html ao fim da otimização. Não parece tão útil não.
 # Se parar o programa com um CTRL+C nem mostra
-prob.driver.scaling_report()
+#prob.driver.scaling_report()

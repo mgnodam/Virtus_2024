@@ -1,4 +1,4 @@
-############################### INSTRUÇÕES DE INSTALAÇÃO.:
+############################### INSTRUÇÕES DE INSTALAÇÃO ###############################
 Aqui estarão as instruções recomendadas para rodar o programa de otimização. Pode ser um pouco complicado e diferente para cada máquina baseado no que já havia instalado na máquina anteriormente. Talvez falte algo aqui que requeira um pouco de investigação, se descobrir coloque aqui.
 
 1. Instalar o Anaconda, para gerenciar o ambiente virtual e instalar os pacotes
@@ -15,7 +15,7 @@ Aqui estarão as instruções recomendadas para rodar o programa de otimização
 
 4. Baixar o executável do avl na versão 3.36 e copiar para dentro dessa pasta do avlwrapper (se não achar o executável tente especificar mais o caminho do diretório no arquivo config)
 
-############################### DESCRIÇÃO.:
+############################### DESCRIÇÃO ###############################
 Este repositório contém o projeto de um programa de Otimização Multidisciplinar desenvolvido para a equipe Minerva Aerodesign da UFRJ para o projeto de aeronaves destinadas à competição SAE Aerodesign.
 
 O início do desenvolvimento se deu na fase inicial da competição de 2023, porém com o intuito de servir ao futuro da equipe.
@@ -39,7 +39,7 @@ Diferentes conceitos de aeronaves precisarão de alterações nos inputs dos arq
 
 O fluxograma junto do repositório mostra a estrutura básica do funcionamento.
 
-O notebook "viewer.ipynb" possibilita a visualização gráfica da evolução dos indivíduos em termos de objetivos e restrições.
+O notebook "viewer.ipynb" possibilita a visualização gráfica da evolução dos indivíduos em termos de objetivos e restrições. Você deve inserir, lá, o nome do arquivo '.db' definido no 'optimizer.py'
 
 O script "post_processing" foi criado para incluir todas as funções de pós processamento além da simples visualização do arquivo "viewer.ipynb". Uma das funções por exemplo é filtrar as melhores aeronaves que se adequem totalmente a todas as restrições fornecendo as variáveis de design adotadas e organizar em um log.
 
@@ -47,12 +47,10 @@ Para poder acompanhar os indivíduos do programa durante a rodagem do mesmo, exe
 
 > python optimizer.py > log_optimizer.txt
 
-Dessa forma todo o registro da evolução será salvo num arquivo chamado log_optimizer.txt. Também é possível rodar em segundo plano fazendo:
+Dessa forma todo o registro da evolução será salvo num arquivo chamado log_optimizer.txt. Você pode nomear o arquivo da forma que desejar, e deixar vários logs!
 
-> python optimizer.py > log_optimizer.txt &
-
-############################### MSG.:
-Olá! Tentei documentar o suficiente para que com alguma pesquisa qualquer um com entendimento em python e aerodesign pudesse conseguir entender os códigos, mas não sou nenhum programador (dá pra perceber) e esse programa foi um pouco fruto de um experimento, em colaboração claro com alguns membros de aerodinâmica, desempenho e controle e estabilidade. A equipe já teve um MDO antes cujo domínio sobre se perdeu ao longo dos anos (depois de um tempo ninguém entendia mais como funcionava), então essa foi uma preocupação constante. Qualquer coisa só me contatar, devem haver as infos no GitHub, mas:
+############################### MSG ###############################
+Olá! Tentei documentar o suficiente para que com alguma pesquisa qualquer um com entendimento em python e aerodesign pudesse conseguir entender os códigos, mas não sou nenhum programador e esse programa foi um pouco fruto de um experimento, em colaboração claro com alguns membros de aerodinâmica, desempenho e controle e estabilidade. A equipe já teve um MDO antes cujo domínio sobre se perdeu ao longo dos anos (depois de um tempo ninguém entendia mais como funcionava), então essa foi uma preocupação. Qualquer coisa só me contatar, devem haver as infos no GitHub, mas:
 
 Autor: Lucas Alves da Rosa (lucas.rosa@poli.ufrj.br)
 

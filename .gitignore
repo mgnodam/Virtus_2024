@@ -1,6 +1,9 @@
 __pycache__/
 .vscode/
 reports/
+logs/
+airfoils/
+references/
 *.db
 driver_scaling_report.html
 out.json
@@ -9,3 +12,4 @@ log_*
 out_trim_test.json
 toDo.txt
 out*
+*_fus.py
