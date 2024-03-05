@@ -13,7 +13,7 @@ e a necessidade da inclusão de ciclos
 prob= om.Problem()
 
 #Definição dos subsistemas
-individual_inputs= ['w_cr', 'w_ct', 'w_z', 'w_inc', 'eh_b', 'eh_c', 'eh_inc', 'ev_b', 'eh_x', 'eh_z', 'motor_x']
+individual_inputs= ['w_cr', 'w_ct', 'w_z', 'w_inc', 'eh_b', 'eh_c', 'eh_inc', 'ev_b', 'eh_x', 'eh_z', 'motor_x', 'pot']
 individual_outputs= ['score','cp', 'vht', 'vvt', 'a_trim', 'me', 'ar', 'eh_ar', 'low_cg', 'h_const', 'eh_z_const', 'x_cg_p']
 
 #Subsistema de avaliação
@@ -30,6 +30,7 @@ prob.model.set_input_defaults('ev_b', 0.182)
 prob.model.set_input_defaults('eh_x', 1.08)
 prob.model.set_input_defaults('eh_z', 0.25)
 prob.model.set_input_defaults('motor_x', -0.157)
+prob.model.set_input_defaults('pot', 712.5)
 
 #Setup do driver de otimização diferencial
 
@@ -56,7 +57,7 @@ prob.driver.options['elitism']= True
 '''
 
 #Adição de um recorder para guardar o histórico da otimização e possibilitar a visualização
-prob.driver.add_recorder(om.SqliteRecorder("./logs/20240301_1.db"))
+prob.driver.add_recorder(om.SqliteRecorder("./logs/20240303.db"))
 prob.driver.recording_options['includes'] = ['*']
 prob.driver.recording_options['record_objectives'] = True
 prob.driver.recording_options['record_constraints'] = True
@@ -67,7 +68,7 @@ prob.driver.recording_options['record_desvars'] = True
 prob.model.add_design_var('w_cr', lower= 0.50, upper= 0.57)
 prob.model.add_design_var('w_ct', lower= 0.33, upper= 0.52)
 prob.model.add_design_var('w_z', lower= 0.18, upper= 0.24)
-prob.model.add_design_var('w_inc', lower= -3, upper= 3)
+prob.model.add_design_var('w_inc', lower= 0, upper= 3)
 prob.model.add_design_var('eh_b', lower= 0.8, upper= 1.2)
 prob.model.add_design_var('eh_c', lower= 0.20, upper= 0.30)
 prob.model.add_design_var('eh_inc', lower= -3.0, upper= 3.0)
@@ -75,6 +76,7 @@ prob.model.add_design_var('eh_x', lower= 1.0, upper= 1.2)
 prob.model.add_design_var('eh_z', lower= 0.25, upper= 0.35)
 prob.model.add_design_var('ev_b', lower= 0.15, upper= 0.3)
 prob.model.add_design_var('motor_x', lower= -0.3, upper= -0.15)
+prob.model.add_design_var('pot', lower= 680, upper= 745)
 
 prob.model.add_objective('individual_scorer.score', scaler= -1) #-1 para maximizar o valor do score
 
@@ -93,7 +95,7 @@ prob.model.add_constraint('individual_scorer.me', lower= me_min, upper= me_max, 
 prob.model.add_constraint('individual_scorer.low_cg', lower= -0.03, scaler= 1)
 prob.model.add_constraint('individual_scorer.h_const', upper= 0.60, scaler= 1)
 prob.model.add_constraint('individual_scorer.eh_z_const', lower= 0.05, scaler= 1)
-prob.model.add_constraint('individual_scorer.x_cg_p', lower= 0.25, upper= 0.365, scaler= 0.0) # 100 anteriormente
+prob.model.add_constraint('individual_scorer.x_cg_p', lower= 0.25, upper= 0.34, scaler= 0.0) # 100 anteriormente
 
 # Settando e rodando o driver
 prob.setup()

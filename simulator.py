@@ -228,7 +228,7 @@ class Simulator():
         
         try:
             #A otimização busca um mínimo, portanto a nossa pontuação é espelhada aqui
-            self.mtow= mtow(self.p, self.t, self.v, self.prototype.pv, self.prototype.s_ref, self.cl_ge[0], self.clmax, self.cd_ge[0], self.cd[0], g= 9.81, mu= 0.03, n= 1.2, gamma= 0)
+            self.mtow= mtow(self.p, self.t, self.v, self.prototype.pv, self.prototype.s_ref, self.cl_ge[0], self.clmax, self.cd_ge[0], self.cd[0], self.prototype.pot, g= 9.81, mu= 0.03, n= 1.2, gamma= 0)
             print('MTOW CALCULADO COM SUCESSO')
             self.prototype.m= self.mtow
 

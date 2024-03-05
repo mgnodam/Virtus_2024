@@ -8,19 +8,10 @@ import time
 Este arquivo contém alguns testes que foram úteis para debugging durante o desenvolvimento do código.
 """
 # Aviao 1: Primeiro após trocas para perfis de 2024
-aviao1= Prototype ( w_cr= 0.57, w_ct= 0.43816083430599484, w_z= 0.18, w_inc= 0.5892510039423605, eh_b= 1.007857834194341, eh_c= 0.2689758147022697, eh_inc= -0.2442977108707548, ev_b= 0.181660246803834, eh_x= 1.0789168772198707, eh_z= 0.25, motor_x= -0.1574066726130537, ge= False)
-aviao1_ge= Prototype ( w_cr= 0.57, w_ct= 0.43816083430599484, w_z= 0.18, w_inc= 0.5892510039423605, eh_b= 1.007857834194341, eh_c= 0.2689758147022697, eh_inc= -0.2442977108707548, ev_b= 0.181660246803834, eh_x= 1.0789168772198707, eh_z= 0.25, motor_x= -0.1574066726130537, ge= True)
-aviao2= Prototype ( w_cr= 0.5550223752921603, w_ct= 0.32440387770404855, w_z= 0.21381808524016974, w_inc= 0.202664347310206, eh_b= 1.2, eh_c= 0.3, eh_inc= 3.0, ev_b= 0.20350832048754716, eh_x= 1.1162955896906936, eh_z= 0.21434295817757107, motor_x= -0.16789474310742902, motor_z= 0.3, ge= False)
-aviao2_ge= Prototype ( w_cr= 0.5550223752921603, w_ct= 0.32440387770404855, w_z= 0.21381808524016974, w_inc= 0.202664347310206, eh_b= 1.2, eh_c= 0.3, eh_inc= 3.0, ev_b= 0.20350832048754716, eh_x= 1.1162955896906936, eh_z= 0.21434295817757107, motor_x= -0.16789474310742902, motor_z= 0.3, ge= True)
-aviao3= Prototype ( w_cr= 0.57, w_ct= 0.33354097292827256, w_z= 0.21305598815840998, w_inc= -1, eh_b= 1.1546734224464779, eh_c= 0.3, eh_inc= 0, ev_b= 0.15, eh_x= 1.1363659972048326, eh_z= 0.2, motor_x= -0.18738468275339834, motor_z= 0.3, ge= False)
-aviao3_ge= Prototype ( w_cr= 0.57, w_ct= 0.33354097292827256, w_z= 0.21305598815840998, w_inc= -1, eh_b= 1.1546734224464779, eh_c= 0.3, eh_inc= 0, ev_b= 0.15, eh_x= 1.1363659972048326, eh_z= 0.2, motor_x= -0.18738468275339834, motor_z= 0.3, ge= True)
-#aviao4= Prototype ( w_cr= 0.50, w_ct= 0.44, w_z= 0.20, w_inc= 0, eh_b= 0.9, eh_c= 0.2, eh_inc= -1, ev_b= 0.2, eh_x= 1, eh_z= 0.4, motor_x= -0.3, motor_z= 0.24, ge= False)
-#aviao4_ge= Prototype ( w_cr= 0.50, w_ct= 0.44, w_z= 0.20, w_inc= 0, eh_b= 0.9, eh_c= 0.2, eh_inc= -1, ev_b= 0.2, eh_x= 1, eh_z= 0.4, motor_x= -0.3, motor_z= 0.24, ge= True)
-aviao5= Prototype ( w_cr= 0.50, w_ct= 0.44, w_z= 0.18, w_inc= 0, eh_b= 0.9, eh_c= 0.25, eh_inc= -3, ev_b= 0.2, eh_x= 1, eh_z= 0.25, motor_x= -0.1, motor_z= 0.24, ge= False)
-aviao5_ge= Prototype ( w_cr= 0.50, w_ct= 0.44, w_z= 0.18, w_inc= 0, eh_b= 0.9, eh_c= 0.25, eh_inc= -3, ev_b= 0.2, eh_x= 1, eh_z= 0.25, motor_x= -0.1, motor_z= 0.24, ge= True)
-aviao6= Prototype ( w_cr= 0.57, w_ct= 0.3790322580645161, w_z= 0.18, w_inc= -2.142857142857143, eh_b= 1.1746031746031744, eh_c= 0.26, eh_inc= -1.1904761904761907, ev_b= 0.24, eh_x= 1.0507936507936508, eh_z= 0.25, motor_x= -0.21774193548387094, ge= False)
-aviao6_ge= Prototype ( w_cr= 0.57, w_ct= 0.3790322580645161, w_z= 0.18, w_inc= -2.142857142857143, eh_b= 1.1746031746031744, eh_c= 0.26, eh_inc= -1.1904761904761907, ev_b= 0.24, eh_x= 1.0507936507936508, eh_z= 0.25, motor_x= -0.21774193548387094, ge= True)
-
+aviao1= Prototype ( w_cr= 0.57, w_ct= 0.40975013961162043, w_z= 0.18220990045077817, w_inc= 0.1923063435461832, eh_b= 0.8735965804721229, eh_c= 0.2794223867605712, eh_inc= 2.9476393667342435, ev_b= 0.22514748539953888, eh_x= 1.002904353165168, eh_z= 0.3437012200770051, motor_x= -0.2247097169299502,pot= 680.0, ge= False)
+aviao1_ge= Prototype ( w_cr= 0.57, w_ct= 0.40975013961162043, w_z= 0.18220990045077817, w_inc= 0.1923063435461832, eh_b= 0.8735965804721229, eh_c= 0.2794223867605712, eh_inc= 2.9476393667342435, ev_b= 0.22514748539953888, eh_x= 1.002904353165168, eh_z= 0.3437012200770051, motor_x= -0.2247097169299502,pot= 680.0, ge= True)
+aviao2= Prototype ( w_cr= 0.5699220096512, w_ct= 0.33, w_z= 0.18, w_inc= -0.6927216185942724, eh_b= 1.1455366975233654, eh_c= 0.2832457949890901, eh_inc= 0.11748405385738692, ev_b= 0.2330642307232967, eh_x= 1.038698074462542, eh_z= 0.25, motor_x= -0.19707875106896672,pot= 680.0, ge= False)
+aviao2_ge= Prototype ( w_cr= 0.5699220096512, w_ct= 0.33, w_z= 0.18, w_inc= -0.6927216185942724, eh_b= 1.1455366975233654, eh_c= 0.2832457949890901, eh_inc= 0.11748405385738692, ev_b= 0.2330642307232967, eh_x= 1.038698074462542, eh_z= 0.25, motor_x= -0.19707875106896672,pot= 680.0, ge= True)
 
 print('Peso vazio:', aviao1.pv, 
       'X_cg:',aviao1.x_cg, 

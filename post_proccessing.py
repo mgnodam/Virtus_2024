@@ -7,13 +7,13 @@ proc_case=[]
 if (np > 1):
     for p in range(np):
 
-        crp= om.CaseReader('./logs/20240301_1.db'+str(p))
+        crp= om.CaseReader('./logs/20240303.db'+str(p))
         driver_cases = crp.list_cases('driver')
         cases = crp.get_cases()
         proc_case.append(cases)
 
 else:
-    crp= om.CaseReader('./logs/20240301_1.db')
+    crp= om.CaseReader('./logs/20240303.db')
     driver_cases = crp.list_cases('driver')
     cases = crp.get_cases()
     proc_case.append(cases)
@@ -29,14 +29,14 @@ for proc_n in range(len(proc_case)):
             #True
             (case.outputs['individual_scorer.a_trim'] <= a_trim_max)
             and (case.outputs['individual_scorer.a_trim'] >= a_trim_min)
-            and (case.outputs['individual_scorer.x_cg_p'] <=0.365) 
+            and (case.outputs['individual_scorer.x_cg_p'] <=0.34) 
             and (case.outputs['individual_scorer.x_cg_p'] >= 0.25) 
             and (case.outputs['individual_scorer.me'] <= me_max)
             and (case.outputs['individual_scorer.me'] >= me_min)
             #and (case.outputs['individual_scorer.ar'] >= 5)
             #and (case.outputs['individual_scorer.vht'] <= 0.8)
-            #and (case.outputs['individual_scorer.vvt'] >= vvt_min)
-            and (case.outputs['individual_scorer.score'] >= 8.2)
+            and (case.outputs['individual_scorer.vvt'] >= vvt_min)
+            and (case.outputs['individual_scorer.score'] >= 7.75)
             #and (case.outputs['individual_scorer.g_const'] <= 2.9)
             #and (case.outputs['individual_scorer.g_const'] >= 2.8)
             ):
@@ -58,7 +58,7 @@ for proc_n in range(len(proc_case)):
                   ' eh_x= ',float(case.outputs['eh_x']),','
                   ' eh_z= ',float(case.outputs['eh_z']),','
                   ' motor_x= ',float(case.outputs['motor_x']),','
-                  #' motor_z= ',float(case.outputs['motor_z']),','
+                  'pot= ',float(case.outputs['pot']),','
                   ')'
                   , sep=''
                   )

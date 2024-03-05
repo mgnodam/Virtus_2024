@@ -94,12 +94,12 @@ class Prototype():
     O número de painéis no AVL é ajustado diretamente no código desta classe.
     '''
 
-    def __init__(self, w_cr, w_ct, w_z, w_inc, eh_b, eh_c, eh_inc, ev_b, eh_x, eh_z, motor_x, motor_z= 0.24, w_wo= 0, ge= False):
+    def __init__(self, w_cr, w_ct, w_z, w_inc, eh_b, eh_c, eh_inc, ev_b, eh_x, eh_z, motor_x, pot, motor_z= 0.24, w_wo= 0, ge= False):
         
         #w_ct são frações (0 a 1) de outra quantidade. Para facilitar a restrição na otimização
 
         #Asa:
-        w_bt= 2.9- (eh_z+ev_b/2)               ####### Função exclusiva para a restrição de 2023 ###########
+        w_bt= find_wb_restric(2.3, pot , 2)               ####### Função exclusiva para a restrição de 2024 ###########
         w_ct= w_ct* w_cr            # O input de w_ct é porcentagem da corda da raíz (w_cr), convertendo para [m]
         w_baf= w_baf_opt(w_ct, w_bt, w_cr)  # O input de w_baf é porcentagem do ponto de transição (w_bt), otimizando para asa eliptica, convertendo para [m] 
         self.w_baf= w_baf           # Ponto de transição da envergadura
@@ -131,6 +131,7 @@ class Prototype():
         # MOTOR
         self.motor_x= motor_x       # Posição horizontal do motor. Vai ser negativa em uma configuração convencional
         self.motor_z= motor_z       # Posição vertical do motor
+        self.pot= pot
 
         # FUSELAGEM E TAILBOOM
         fus_h= self.w_cr*0.12       # Modelando as placas da fuselagem como retângulos de altura = 12% da corda da raíz
@@ -194,13 +195,16 @@ class Prototype():
         min1209_profile_drag= ProfileDrag(cl=[0.4, 1.25, 2.38],cd=[0.06, 0.0177, 0.043])
 
         naca0012_profile_drag= ProfileDrag(cl=[-1.128,0.0,1.128],cd=[0.038,0.0077,0.038])
+        naca4412_s1223_70_profile_drag= ProfileDrag(cl=[-1.67,-0.57,0.068],cd=[0.0247,0.01,0.042])
 
         # O arquivo .dat deve estar junto com o arquivo deste código, colocar os perfis em uma pasta separada, em primeira análise, gera erros
         root_foil='MIN1112.dat'
         tip_foil='MIN1209.dat'
+        eh_foil='NACA4412_S1223_70.dat'
 
         root_profile_drag= min1112_profile_drag
         tip_profile_drag= min1209_profile_drag
+        eh_profile_drag= naca4412_s1223_70_profile_drag
 
         self.w_root_clmax= min1112_clmax
         self.w_tip_clmax= min1209_clmax
@@ -232,15 +236,15 @@ class Prototype():
 
         self.eh_root_section = Section(leading_edge_point=Point(eh_x, 0, eh_z),
                                         chord=eh_c,
-                                        airfoil=NacaAirfoil(naca='0012'),
-                                        profile_drag= naca0012_profile_drag,
+                                        airfoil=FileAirfoil(eh_foil),
+                                        profile_drag= eh_profile_drag,
                                         controls= [self.elevator]
                                         )
         
         self.eh_tip_section = Section(leading_edge_point=Point(eh_x, eh_b_h, eh_z),
                                         chord=eh_c,
-                                        airfoil=NacaAirfoil(naca='0012'),
-                                        profile_drag= naca0012_profile_drag,
+                                        airfoil=FileAirfoil(eh_foil),
+                                        profile_drag= eh_profile_drag,
                                         controls= [self.elevator]
                                         )
         

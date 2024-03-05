@@ -141,6 +141,27 @@ def mac(x, w_bt, w_baf, w_cr, w_ct):
 
     return (2/s_ref) * (int_reta+int_trap)
 
+##### RESTRIÇÕES DE 2024 #####
+
+def restric(b,p,n=2):
+
+    """Calcula o valor da restrição física dada uma envergadura "b", uma potência "p" e um número de superfícies sustentadoras "n" com função longitudinal"""
+
+    r = p*b**(0.1529+0.1233*max(n,2))
+
+    return r
+
+def minimize_restric(b,p,n=2):
+
+    min_r= restric(b,p,n)-981.8
+
+    return min_r
+
+def find_wb_restric(b, p ,n=2):
+
+    b_max= root_scalar(minimize_restric, args= (p, n), method='bisect', bracket=[1.0,3.5])
+
+    return b_max.root
 
 
 ##### TESTES #####

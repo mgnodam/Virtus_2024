@@ -21,6 +21,7 @@ class Individual(om.ExplicitComponent):
         self.add_input('eh_x', val= 1.051)
         self.add_input('eh_z', val= 0.25)
         self.add_input('motor_x', val= -0.218)
+        self.add_input('pot', val= 712.5)
 
         # Os outputs incluem a pontuação e possíveis restrições calculadas internamente em outro código
         self.add_output('score', val= 7.7)
@@ -51,10 +52,12 @@ class Individual(om.ExplicitComponent):
         eh_x= float(inputs['eh_x'])
         eh_z= float(inputs['eh_z'])
         motor_x= float(inputs['motor_x'])
+        pot= float(inputs['pot'])
+
 
         # Construção dos indivíduos. Para facilitar, está sendo construindo um indivíduo com e o outro sem efeito solo
-        prototype= Prototype(w_cr, w_ct, w_z, w_inc, eh_b, eh_c, eh_inc, ev_b, eh_x, eh_z, motor_x, ge= False)
-        prototype_ge= Prototype(w_cr, w_ct, w_z, w_inc, eh_b, eh_c, eh_inc, ev_b, eh_x, eh_z, motor_x, ge= True)
+        prototype= Prototype(w_cr, w_ct, w_z, w_inc, eh_b, eh_c, eh_inc, ev_b, eh_x, eh_z, motor_x, pot, ge= False)
+        prototype_ge= Prototype(w_cr, w_ct, w_z, w_inc, eh_b, eh_c, eh_inc, ev_b, eh_x, eh_z, motor_x, pot, ge= True)
 
         simulator= Simulator(prototype, prototype_ge)
 
